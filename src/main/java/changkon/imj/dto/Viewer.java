@@ -1,5 +1,12 @@
 package changkon.imj.dto;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import changkon.imj.domain.Person;
+
 /**
  * Movie viewer. Viewer is entity which watches movie.
  * 
@@ -7,6 +14,32 @@ package changkon.imj.dto;
  * bandwidth.
  * @author Chang Kon Han
  */
-public class Viewer {
+@XmlRootElement(name="viewer")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Viewer extends Person {
+	@XmlAttribute
+	private long id;
+	
+	/**
+	 * Default constructor. Javabean convention
+	 */
+	public Viewer() {
+		super();
+	}
 
+	/**
+	 * @return Id of Viewer
+	 */
+	public long getId() {
+		return id;
+	}
+
+	/**
+	 * Sets id of Viewer
+	 * @param id
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 }

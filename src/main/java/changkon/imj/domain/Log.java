@@ -1,15 +1,28 @@
 package changkon.imj.domain;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.joda.time.DateTime;
 
 /**
  * Log entry of movie viewing
  * @author Chang Kon Han
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Log {
+	
+	@XmlElement
 	private DateTime date;
+	
+	@XmlElement(name="geo-location")
 	private GeoLocation geoLocation;
+	
+	@XmlElement
 	private Viewer viewer;
+	
+	@XmlElement
 	private Movie movie;
 	
 	/**

@@ -1,11 +1,20 @@
 package changkon.imj.domain;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Geographic location
  * @author Chang Kon Han
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class GeoLocation {
+	
+	@XmlElement
 	private double latitude;
+	
+	@XmlElement
 	private double longitude;
 	
 	/**

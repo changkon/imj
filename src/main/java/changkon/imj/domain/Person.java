@@ -1,14 +1,29 @@
 package changkon.imj.domain;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Abstract class which defines characteristic of Person entity in IMJ
  * @author Chang Kon Han
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Person {
+	
+	@XmlElement(name="first-name")
 	private String firstName;
+	
+	@XmlElement(name="last-name")
 	private String lastName;
+	
+	@XmlElement
 	private int age;
+	
+	@XmlElement
 	private Gender gender;
+	
+	@XmlElement
 	private String country;
 	
 	/**
