@@ -1,6 +1,6 @@
 package changkon.imj.domain;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -9,8 +9,8 @@ import org.apache.commons.logging.Log;
  * @author Chang Kon Han
  */
 public class Viewer extends Person implements Subscriber {
-	private List<Log> movieLog;
-	private List<Movie> recommendedMovies;
+	private Set<Log> movieLog;
+	private Set<Movie> recommendedMovies;
 	
 	/**
 	 * Default constructor. Javabean convention
@@ -20,7 +20,7 @@ public class Viewer extends Person implements Subscriber {
 	/**
 	 * @return Movie Log for viewer
 	 */
-	public List<Log> getMovieLog() {
+	public Set<Log> getMovieLog() {
 		return movieLog;
 	}
 	
@@ -28,7 +28,7 @@ public class Viewer extends Person implements Subscriber {
 	 * Sets movie log for viewer
 	 * @param movieLog
 	 */
-	public void setMovieLog(List<Log> movieLog) {
+	public void setMovieLog(Set<Log> movieLog) {
 		this.movieLog = movieLog;
 	}
 	
@@ -51,7 +51,7 @@ public class Viewer extends Person implements Subscriber {
 	/**
 	 * @return Recommended movies for viewer
 	 */
-	public List<Movie> getRecommendedMovies() {
+	public Set<Movie> getRecommendedMovies() {
 		return recommendedMovies;
 	}
 	
@@ -59,7 +59,7 @@ public class Viewer extends Person implements Subscriber {
 	 * Sets recommended movies for viewer
 	 * @param recommendedMovies
 	 */
-	public void setRecommendedMovies(List<Movie> recommendedMovies) {
+	public void setRecommendedMovies(Set<Movie> recommendedMovies) {
 		this.recommendedMovies = recommendedMovies;
 	}
 	

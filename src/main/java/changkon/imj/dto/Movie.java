@@ -1,10 +1,5 @@
 package changkon.imj.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -22,13 +17,9 @@ import changkon.imj.domain.Genre;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@Entity
-@Table(name="MOVIE")
 public class Movie {
 	
 	@XmlAttribute
-	@Id
-	@GeneratedValue(generator="ID_GENERATOR")
 	private Long id;
 	
 	@XmlElement
@@ -38,7 +29,6 @@ public class Movie {
 	private String director;
 	
 	@XmlElement
-	@Enumerated
 	private Genre genre;
 	
 	@XmlElement

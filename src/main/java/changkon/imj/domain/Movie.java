@@ -1,8 +1,18 @@
 package changkon.imj.domain;
 
 import java.net.URL;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.Table;
 
 import org.joda.time.DateTime;
 
@@ -10,14 +20,35 @@ import org.joda.time.DateTime;
  * Movie class representing a movie, containing relevant information about the film
  * @author Chang Kon Han
  */
+@Entity
+@Table(name="MOVIE")
 public class Movie {
+	
+	@Id
+	@GeneratedValue(generator="ID_GENERATOR")
 	private Long id;
 	private String title;
 	private String director;
-	private List<String> cast;
+	
+	@ElementCollection
+	@CollectionTable(name="CAST")
+	@Column(name="NAME")
+	@org.hibernate.annotations.CollectionId(
+			columns = @Column(name="CAST_ID"),
+			type = @org.hibernate.annotations.Type(type="long"),
+			generator = "ID_GENERATOR")
+	private Collection<String> cast;
 	private String description;
+	
+	@Enumerated
 	private Genre genre;
+	
+	@ElementCollection
+	@CollectionTable(name="RELEASES")
+	@MapKeyColumn(name="COUNTRY")
+	@Column(name="DATE")
 	private Map<String, DateTime> release;
+	
 	private String country;
 	private String language;
 	private int runtime;
@@ -45,7 +76,7 @@ public class Movie {
 			Long id,
 			String title,
 			String director,
-			List<String> cast,
+			Collection<String> cast,
 			String description,
 			Genre genre,
 			Map<String, DateTime> release,
@@ -116,7 +147,7 @@ public class Movie {
 	/**
 	 * @return Cast for movie
 	 */
-	public List<String> getCast() {
+	public Collection<String> getCast() {
 		return cast;
 	}
 
@@ -124,7 +155,7 @@ public class Movie {
 	 * Sets cast of movie
 	 * @param cast
 	 */
-	public void setCast(List<String> cast) {
+	public void setCast(Collection<String> cast) {
 		this.cast = cast;
 	}
 
