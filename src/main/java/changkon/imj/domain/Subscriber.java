@@ -6,4 +6,6 @@ package changkon.imj.domain;
  */
 public interface Subscriber {
 	void notification();
+	void subscribe(Movie movie);
+	void unsubscribe(Movie movie);
 }

@@ -2,14 +2,26 @@ package changkon.imj.domain;
 
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+
 import org.apache.commons.logging.Log;
+import org.slf4j.LoggerFactory;
 
 /**
  * Movie viewer. Viewer is entity which watches movie
  * @author Chang Kon Han
  */
 public class Viewer extends Person implements Subscriber {
+	
+	@OneToMany(mappedBy="viewer", fetch=FetchType.LAZY)
 	private Set<Log> movieLog;
+	
+	@CollectionTable(
+			name="RECOMMENDED_MOVIES",
+			joinColumns = @JoinColumn(name="PERSON_ID"))
 	private Set<Movie> recommendedMovies;
 	
 	/**
@@ -65,7 +77,21 @@ public class Viewer extends Person implements Subscriber {
 	
 	public void notification() {
 		// TODO Auto-generated method stub
-		
+		LoggerFactory.getLogger(Viewer.class).info("Notification received");
+	}
+
+	/**
+	 * Subscribes to movie by adding movie to recommended list
+	 */
+	public void subscribe(Movie movie) {
+		recommendedMovies.add(movie);
+	}
+
+	/**
+	 * Unsubscribes to movie by removing movie from recommended list
+	 */
+	public void unsubscribe(Movie movie) {
+		recommendedMovies.remove(movie);
 	}
 	
 }
