@@ -2,7 +2,6 @@ package changkon.imj.dto;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import changkon.imj.domain.Person;
@@ -17,8 +16,6 @@ import changkon.imj.domain.Person;
 @XmlRootElement(name="viewer")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Viewer extends Person {
-	@XmlAttribute
-	private long id;
 	
 	/**
 	 * Default constructor. Javabean convention
@@ -26,20 +23,4 @@ public class Viewer extends Person {
 	public Viewer() {
 		super();
 	}
-
-	/**
-	 * @return Id of Viewer
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * Sets id of Viewer
-	 * @param id
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
-	
 }

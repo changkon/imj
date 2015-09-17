@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
  * @author Chang Kon Han
  */
 public class Viewer extends Person implements Subscriber {
-	private long id;
 	private List<Log> movieLog;
 	private List<Movie> recommendedMovies;
 	
@@ -17,21 +16,6 @@ public class Viewer extends Person implements Subscriber {
 	 * Default constructor. Javabean convention
 	 */
 	public Viewer() {}
-	
-	/**
-	 * @return Id of Viewer
-	 */
-	public long getId() {
-		return id;
-	}
-	
-	/**
-	 * Set Id of Viewer
-	 * @param id
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
 	
 	/**
 	 * @return Movie Log for viewer

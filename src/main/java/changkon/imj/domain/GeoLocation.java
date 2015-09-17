@@ -1,5 +1,7 @@
 package changkon.imj.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -9,12 +11,15 @@ import javax.xml.bind.annotation.XmlElement;
  * @author Chang Kon Han
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@Embeddable
 public class GeoLocation {
 	
 	@XmlElement
+	@Column(name="LATITUDE", nullable=false)
 	private double latitude;
 	
 	@XmlElement
+	@Column(name="LONGITUDE", nullable=false)
 	private double longitude;
 	
 	/**

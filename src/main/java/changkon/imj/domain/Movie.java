@@ -10,11 +10,8 @@ import org.joda.time.DateTime;
  * Movie class representing a movie, containing relevant information about the film
  * @author Chang Kon Han
  */
-
-//@Entity
-//@Table(name="MOVIE")
 public class Movie {
-	private long id;
+	private Long id;
 	private String title;
 	private String director;
 	private List<String> cast;
@@ -45,7 +42,7 @@ public class Movie {
 	 * @param poster
 	 */
 	public Movie(
-			long id,
+			Long id,
 			String title,
 			String director,
 			List<String> cast,
@@ -74,7 +71,7 @@ public class Movie {
 	/**
 	 * @return Id of movie
 	 */
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 	
@@ -82,7 +79,7 @@ public class Movie {
 	 * Sets id of movie
 	 * @param id
 	 */
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

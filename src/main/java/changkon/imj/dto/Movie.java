@@ -1,9 +1,10 @@
 package changkon.imj.dto;
 
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -21,10 +22,14 @@ import changkon.imj.domain.Genre;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@Entity
+@Table(name="MOVIE")
 public class Movie {
 	
 	@XmlAttribute
-	private long id;
+	@Id
+	@GeneratedValue(generator="ID_GENERATOR")
+	private Long id;
 	
 	@XmlElement
 	private String title;
@@ -33,6 +38,7 @@ public class Movie {
 	private String director;
 	
 	@XmlElement
+	@Enumerated
 	private Genre genre;
 	
 	@XmlElement
@@ -64,7 +70,7 @@ public class Movie {
 	 * @param runtime
 	 */
 	public Movie(
-			long id,
+			Long id,
 			String title,
 			String director,
 			Genre genre,
@@ -85,7 +91,7 @@ public class Movie {
 	/**
 	 * @return Id of movie
 	 */
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 	
@@ -93,7 +99,7 @@ public class Movie {
 	 * Sets id of movie
 	 * @param id
 	 */
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

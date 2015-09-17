@@ -1,5 +1,11 @@
 package changkon.imj.domain;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,18 +17,25 @@ import org.joda.time.DateTime;
  * @author Chang Kon Han
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@Entity
+@Table(name="LOG")
 public class Log {
 	
 	@XmlElement
 	private DateTime date;
 	
 	@XmlElement(name="geo-location")
+	@Embedded
 	private GeoLocation geoLocation;
 	
 	@XmlElement
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="VIEWER_ID", nullable=false)
 	private Viewer viewer;
 	
 	@XmlElement
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="MOVIE_ID", nullable=false)
 	private Movie movie;
 	
 	/**

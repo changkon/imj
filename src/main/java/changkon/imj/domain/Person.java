@@ -1,5 +1,11 @@
 package changkon.imj.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -9,7 +15,13 @@ import javax.xml.bind.annotation.XmlElement;
  * @author Chang Kon Han
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Person {
+	
+	@Id
+	@GeneratedValue(generator="ID_GENERATOR")
+	private Long id;
 	
 	@XmlElement(name="first-name")
 	private String firstName;
@@ -21,6 +33,7 @@ public abstract class Person {
 	private int age;
 	
 	@XmlElement
+	@Enumerated
 	private Gender gender;
 	
 	@XmlElement
@@ -39,12 +52,28 @@ public abstract class Person {
 	 * @param gender
 	 * @param country
 	 */
-	public Person(String firstName, String lastName, int age, Gender gender, String country) {
+	public Person(Long id, String firstName, String lastName, int age, Gender gender, String country) {
+		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.age = age;
 		this.gender = gender;
 		this.country = country;
+	}
+	
+	/**
+	 * @return Id of person
+	 */
+	public Long getId() {
+		return id;
+	}
+	
+	/**
+	 * Sets id of person
+	 * @param id
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	/**
