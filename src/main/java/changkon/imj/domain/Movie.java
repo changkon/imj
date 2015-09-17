@@ -10,6 +10,9 @@ import org.joda.time.DateTime;
  * Movie class representing a movie, containing relevant information about the film
  * @author Chang Kon Han
  */
+
+//@Entity
+//@Table(name="MOVIE")
 public class Movie {
 	private long id;
 	private String title;

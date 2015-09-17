@@ -1,80 +1,108 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>changkon</groupId>
-  <artifactId>imj</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+	<groupId>changkon</groupId>
+	<artifactId>imj</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-  <name>se325_main</name>
-  <url>http://maven.apache.org</url>
+	<name>se325_main</name>
+	<url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
-  <dependencies>
-    <!-- Required for JAXB. -->
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxb-provider</artifactId>
-      <version>3.0.9.Final</version>
+	<dependencies>
+		<!-- Required for JAXB. -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>3.0.9.Final</version>
 
-      <!-- Dependency resteasy-jaxb-provider includes a (transitive) dependency 
+			<!-- Dependency resteasy-jaxb-provider includes a (transitive) dependency 
 		on FastInfoset, which depends on jsr173.api. jsr173.api defines the javax.xml.bind 
 		package, that is now part of the standard JDK. jsr173 defines a class javax.xml.bind.XMLConstants 
 		that differs to the standard javax.xml.bind.XMLConstants class. This project 
 		requires the standard class, hence this exclusion. -->
-      <exclusions>
-        <exclusion>
-          <artifactId>FastInfoset</artifactId>
-          <groupId>com.sun.xml.fastinfoset</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- Joda time -->
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>2.8.2</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- core library -->
-    <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-         <artifactId>resteasy-jaxrs</artifactId>
-        <version>2.3.1.GA</version>
-    </dependency>
-    <dependency>
-        <groupId>net.sf.scannotation</groupId>
-        <artifactId>scannotation</artifactId>
-        <version>1.0.2</version>
-    </dependency>
-  </dependencies>
-  
-  <repositories>
-    <repository>
-      <id>jboss</id>
-      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-    </repository>
-  </repositories>
+			<exclusions>
+				<exclusion>
+					<artifactId>FastInfoset</artifactId>
+					<groupId>com.sun.xml.fastinfoset</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Joda time -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.12</version>
+		</dependency>	
+		<dependency>   
+			<groupId>org.slf4j</groupId>  
+			<artifactId>slf4j-log4j12</artifactId>  
+			<version>1.7.12</version>
+		</dependency>
+		<!-- Database -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.187</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>4.3.8.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.0.3.Final</version>
+		</dependency>
+
+		<!-- core library -->
+		<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				 <artifactId>resteasy-jaxrs</artifactId>
+				<version>2.3.1.GA</version>
+		</dependency>
+		<dependency>
+				<groupId>net.sf.scannotation</groupId>
+				<artifactId>scannotation</artifactId>
+				<version>1.0.2</version>
+		</dependency>
+	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>jboss</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
 </project>
