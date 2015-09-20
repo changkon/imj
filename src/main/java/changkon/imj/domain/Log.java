@@ -1,14 +1,19 @@
 package changkon.imj.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.OneToOne;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.joda.time.DateTime;
 
@@ -18,8 +23,23 @@ import org.joda.time.DateTime;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
-@Table(name="LOG")
 public class Log {
+
+	@Id
+	@GeneratedValue(generator="ID_GENERATOR")
+	private Long id;
+	
+	@XmlTransient
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="VIEWER_ID", nullable=false)
+	private Viewer viewer;
+	
+	@XmlElement
+	@OneToOne(
+			optional=false,
+			cascade=CascadeType.PERSIST)
+	@JoinColumn(name="MOVIE_ID", nullable=false)
+	private Movie movie;
 	
 	@XmlElement
 	private DateTime date;
@@ -27,16 +47,6 @@ public class Log {
 	@XmlElement(name="geo-location")
 	@Embedded
 	private GeoLocation geoLocation;
-	
-	@XmlElement
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="VIEWER_ID", nullable=false)
-	private Viewer viewer;
-	
-	@XmlElement
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="MOVIE_ID", nullable=false)
-	private Movie movie;
 	
 	/**
 	 * Default constructor. JavaBean convention
@@ -115,5 +125,14 @@ public class Log {
 	 */
 	public void setMovie(Movie movie) {
 		this.movie = movie;
+	}
+	
+	/**
+	 * Places correct instance to variable during unmarshal
+	 * @param u
+	 * @param parent
+	 */
+	protected void afterUnmarshal(Unmarshaller u, Object parent) {
+		viewer = (Viewer)parent;
 	}
 }

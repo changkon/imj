@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,11 +17,13 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
+@Table(name="PERSON")
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Person {
 	
 	@Id
 	@GeneratedValue(generator="ID_GENERATOR")
+	@XmlElement
 	private Long id;
 	
 	@XmlElement(name="first-name")

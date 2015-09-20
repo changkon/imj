@@ -13,6 +13,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.joda.time.DateTime;
 
@@ -20,16 +25,26 @@ import org.joda.time.DateTime;
  * Movie class representing a movie, containing relevant information about the film
  * @author Chang Kon Han
  */
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name="MOVIE")
 public class Movie {
 	
 	@Id
 	@GeneratedValue(generator="ID_GENERATOR")
+	@XmlElement
 	private Long id;
+	
+	@XmlElement
 	private String title;
+	
+	@XmlElement
 	private String director;
 	
+	@XmlElementWrapper(name="cast-list")
+	@XmlElement(name="cast-member")
 	@ElementCollection
 	@CollectionTable(name="CAST")
 	@Column(name="NAME")
@@ -38,20 +53,31 @@ public class Movie {
 			type = @org.hibernate.annotations.Type(type="long"),
 			generator = "ID_GENERATOR")
 	private Collection<String> cast;
+	
+	@XmlElement
 	private String description;
 	
+	@XmlElement
 	@Enumerated
 	private Genre genre;
 	
+	@XmlElement
 	@ElementCollection
 	@CollectionTable(name="RELEASES")
 	@MapKeyColumn(name="COUNTRY")
 	@Column(name="DATE")
 	private Map<String, DateTime> release;
 	
+	@XmlElement
 	private String country;
+	
+	@XmlElement
 	private String language;
+	
+	@XmlElement
 	private int runtime;
+	
+	@XmlElement
 	private URL poster;
 	
 	/**

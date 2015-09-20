@@ -2,10 +2,17 @@ package changkon.imj.domain;
 
 import java.util.Set;
 
-import javax.persistence.CollectionTable;
+import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.logging.Log;
 import org.slf4j.LoggerFactory;
@@ -14,14 +21,23 @@ import org.slf4j.LoggerFactory;
  * Movie viewer. Viewer is entity which watches movie
  * @author Chang Kon Han
  */
+@Table(name="VIEWER")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Viewer extends Person implements Subscriber {
 	
+	@XmlElementWrapper(name="logs")
+	@XmlElement(name="log")
 	@OneToMany(mappedBy="viewer", fetch=FetchType.LAZY)
 	private Set<Log> movieLog;
 	
-	@CollectionTable(
-			name="RECOMMENDED_MOVIES",
-			joinColumns = @JoinColumn(name="PERSON_ID"))
+	@XmlElementWrapper(name="recommended-movies")
+	@XmlElement(name="movie")
+	@OneToMany(cascade=CascadeType.PERSIST)
+	@JoinTable(
+			name="RECOMMENDEDMOVIES",
+			joinColumns=@JoinColumn(name="VIEWER_ID"),
+			inverseJoinColumns=@JoinColumn(name="MOVIE_ID"))
 	private Set<Movie> recommendedMovies;
 	
 	/**
