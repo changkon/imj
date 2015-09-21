@@ -3,6 +3,9 @@ package changkon.imj.domain;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -28,7 +31,8 @@ public class Viewer extends Person implements Subscriber {
 	
 	@XmlElementWrapper(name="logs")
 	@XmlElement(name="log")
-	@OneToMany(mappedBy="viewer", fetch=FetchType.LAZY)
+	@Embedded
+	@ElementCollection
 	private Set<Log> movieLog;
 	
 	@XmlElementWrapper(name="recommended-movies")

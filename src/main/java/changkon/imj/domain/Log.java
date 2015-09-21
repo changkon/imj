@@ -1,14 +1,8 @@
 package changkon.imj.domain;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,26 +16,19 @@ import org.joda.time.DateTime;
  * @author Chang Kon Han
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@Entity
+@Embeddable
 public class Log {
-
-	@Id
-	@GeneratedValue(generator="ID_GENERATOR")
-	private Long id;
 	
 	@XmlTransient
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="VIEWER_ID", nullable=false)
+	@Column(nullable=false, name="VIEWER_ID")
 	private Viewer viewer;
 	
 	@XmlElement
-	@OneToOne(
-			optional=false,
-			cascade=CascadeType.PERSIST)
-	@JoinColumn(name="MOVIE_ID", nullable=false)
+	@Column(nullable=false, name="MOVIE_ID")
 	private Movie movie;
 	
 	@XmlElement
+	@Column(nullable=false, name="DATE")
 	private DateTime date;
 	
 	@XmlElement(name="geo-location")
