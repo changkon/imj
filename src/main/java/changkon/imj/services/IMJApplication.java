@@ -5,22 +5,30 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import changkon.imj.converters.MovieConverter;
+
 /**
  * Main application class responsible for running Internet Movie Journal
  * @author Chang Kon Han
  */
 public class IMJApplication extends Application {
 
-	private Set<Class<?>> services = new HashSet<Class<?>>();
+	private Set<Object> singletons = new HashSet<Object>();
+	private Set<Class<?>> components = new HashSet<Class<?>>();
 	
 	public IMJApplication() {
-		services.add(ViewerResource.class);
-		services.add(MovieResource.class);
-		services.add(LogResource.class);
+		singletons.add(new ViewerResource());
+		singletons.add(new MovieResource());
+		components.add(MovieConverter.class);
+	}
+
+	@Override
+	public Set<Object> getSingletons() {
+		return singletons;
 	}
 
 	@Override
 	public Set<Class<?>> getClasses() {
-		return services;
+		return components;
 	}
 }

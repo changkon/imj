@@ -3,9 +3,7 @@ package changkon.imj.domain;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -17,13 +15,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.commons.logging.Log;
 import org.slf4j.LoggerFactory;
 
 /**
  * Movie viewer. Viewer is entity which watches movie
  * @author Chang Kon Han
  */
+@Entity
 @Table(name="VIEWER")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -31,8 +29,7 @@ public class Viewer extends Person implements Subscriber {
 	
 	@XmlElementWrapper(name="logs")
 	@XmlElement(name="log")
-	@Embedded
-	@ElementCollection
+	@OneToMany(mappedBy="viewer", fetch=FetchType.LAZY)
 	private Set<Log> movieLog;
 	
 	@XmlElementWrapper(name="recommended-movies")

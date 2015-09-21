@@ -1,14 +1,24 @@
 package changkon.imj.domain;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 /**
@@ -16,19 +26,29 @@ import org.joda.time.DateTime;
  * @author Chang Kon Han
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@Embeddable
+@Entity
+@Access(AccessType.FIELD)
 public class Log {
 	
+	@Id
+	@GeneratedValue(generator="ID_GENERATOR")
+	private Long id;
+	
 	@XmlTransient
-	@Column(nullable=false, name="VIEWER_ID")
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="VIEWER_ID", nullable=false)
 	private Viewer viewer;
 	
 	@XmlElement
-	@Column(nullable=false, name="MOVIE_ID")
+	@OneToOne(
+			optional=false,
+			cascade=CascadeType.PERSIST)
+	@JoinColumn(name="MOVIE_ID", nullable=false)
 	private Movie movie;
 	
 	@XmlElement
 	@Column(nullable=false, name="DATE")
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime date;
 	
 	@XmlElement(name="geo-location")
