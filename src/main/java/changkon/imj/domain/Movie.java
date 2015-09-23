@@ -26,25 +26,18 @@ import org.joda.time.DateTime;
  * @author Chang Kon Han
  */
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name="MOVIE")
 public class Movie {
 	
 	@Id
 	@GeneratedValue(generator="ID_GENERATOR")
-	@XmlElement
 	private Long id;
 	
-	@XmlElement
 	private String title;
 	
-	@XmlElement
 	private String director;
 	
-	@XmlElementWrapper(name="cast-list")
-	@XmlElement(name="cast-member")
 	@ElementCollection
 	@CollectionTable(name="CAST")
 	@Column(name="NAME")
@@ -54,30 +47,23 @@ public class Movie {
 			generator = "ID_GENERATOR")
 	private Collection<String> cast;
 	
-	@XmlElement
 	private String description;
 	
-	@XmlElement
 	@Enumerated
 	private Genre genre;
 	
-	@XmlElement
 	@ElementCollection
 	@CollectionTable(name="RELEASES")
 	@MapKeyColumn(name="COUNTRY")
 	@Column(name="DATE")
 	private Map<String, DateTime> release;
 	
-	@XmlElement
 	private String country;
 	
-	@XmlElement
 	private String language;
 	
-	@XmlElement
 	private int runtime;
 	
-	@XmlElement
 	private URL poster;
 	
 	/**

@@ -8,14 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import changkon.imj.domain.Movie;
+import changkon.imj.dto.Movie;
 
 @Path("/movie")
 public interface IMovieResource {
 
 	@POST
 	@Consumes("application/xml")
-	public Movie createMovie(changkon.imj.dto.Movie movie);
+	public Movie createMovie(Movie movie);
 	
 	@GET
 	@Produces("application/xml")

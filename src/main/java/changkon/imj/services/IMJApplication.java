@@ -3,6 +3,7 @@ package changkon.imj.services;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import changkon.imj.converters.MovieConverter;
@@ -11,6 +12,7 @@ import changkon.imj.converters.MovieConverter;
  * Main application class responsible for running Internet Movie Journal
  * @author Chang Kon Han
  */
+@ApplicationPath("/services")
 public class IMJApplication extends Application {
 
 	private Set<Object> singletons = new HashSet<Object>();

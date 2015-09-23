@@ -19,7 +19,7 @@ import changkon.imj.domain.Genre;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Movie {
 	
-	@XmlAttribute
+	@XmlAttribute(name="id")
 	private Long id;
 	
 	@XmlElement
