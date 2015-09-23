@@ -18,7 +18,7 @@ public class MovieResource implements IMovieResource {
 		changkon.imj.domain.Movie movie = MovieMapper.toDomainModel(dtoMovie);
 		
 		// put movie instance into database
-		EntityManager em = Persistence.createEntityManagerFactory("imj").createEntityManager();
+		EntityManager em = Persistence.createEntityManagerFactory("IMJ").createEntityManager();
 		
 		try {
 			// Start a transaction to persist Movie object

@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.joda.time.DateTime;
 
@@ -16,6 +17,7 @@ import changkon.imj.domain.Genre;
  * @author Chang Kon Han
  */
 
+@XmlRootElement(name="movie")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Movie {
 	

@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
@@ -33,7 +34,10 @@ public class MovieTest {
 			movie.setRelease(new DateTime(2008, 07, 24, 0, 0));
 			movie.setCountry("USA");
 			movie.setRuntime(152);
-			Response response = client.target("http://localhost:10003/services/movie").request().post(Entity.xml(movie));
+			
+			WebTarget target = client.target("http://localhost:10003/services/movie");
+			
+			Response response = target.request().post(Entity.xml(movie));
 			int status = response.getStatus();
 			
 			if (status != 201) {

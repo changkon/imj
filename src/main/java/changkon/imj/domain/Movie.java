@@ -1,7 +1,9 @@
 package changkon.imj.domain;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.CollectionTable;
@@ -13,11 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.joda.time.DateTime;
 
@@ -45,7 +42,7 @@ public class Movie {
 			columns = @Column(name="CAST_ID"),
 			type = @org.hibernate.annotations.Type(type="long"),
 			generator = "ID_GENERATOR")
-	private Collection<String> cast;
+	private Collection<String> cast = new ArrayList<String>();
 	
 	private String description;
 	
@@ -56,7 +53,7 @@ public class Movie {
 	@CollectionTable(name="RELEASES")
 	@MapKeyColumn(name="COUNTRY")
 	@Column(name="DATE")
-	private Map<String, DateTime> release;
+	private Map<String, DateTime> release = new HashMap<String, DateTime>();
 	
 	private String country;
 	

@@ -138,6 +138,32 @@
             <scope>test</scope>
         </dependency>
         
+        <!-- Required for JAXB. -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>3.0.9.Final</version>
+
+			<!-- Dependency resteasy-jaxb-provider includes a (transitive) dependency 
+				on FastInfoset, which depends on jsr173.api. jsr173.api defines the javax.xml.bind 
+				package, that is now part of the standard JDK. jsr173 defines a class javax.xml.bind.XMLConstants 
+				that differs to the standard javax.xml.bind.XMLConstants class. This project 
+				requires the standard class, hence this exclusion. -->
+			<exclusions>
+				<exclusion>
+					<artifactId>FastInfoset</artifactId>
+					<groupId>com.sun.xml.fastinfoset</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Useful utility library. -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+        
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
