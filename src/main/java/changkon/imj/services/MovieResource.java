@@ -1,8 +1,11 @@
 package changkon.imj.services;
 
+import java.net.URI;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +17,12 @@ public class MovieResource implements IMovieResource {
 
 	private static Logger logger = LoggerFactory.getLogger(MovieResource.class);
 	
-	public Movie createMovie(Movie dtoMovie) {
+	public Response createMovie(Movie dtoMovie) {
+		// Change dto movie instance into domain model which will be persisted into database
 		changkon.imj.domain.Movie movie = MovieMapper.toDomainModel(dtoMovie);
 		
 		// put movie instance into database
-		EntityManager em = Persistence.createEntityManagerFactory("IMJ").createEntityManager();
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
 		try {
 			// Start a transaction to persist Movie object
@@ -39,7 +43,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return dtoMovie;
+		return Response.created(URI.create("/movie/" + movie.getId())).build();
 	}
 
 	public Movie queryMovieList() {
@@ -47,12 +51,30 @@ public class MovieResource implements IMovieResource {
 		return null;
 	}
 
-	public Movie queryMovie(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Movie queryMovie(long id) {
+		Movie dtoMovie = null;
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			
+			EntityTransaction tx = em.getTransaction();
+			tx.begin();
+			
+			changkon.imj.domain.Movie movie = em.find(changkon.imj.domain.Movie.class, id);
+			dtoMovie = MovieMapper.toDTOModel(movie);
+			
+			tx.commit();
+			
+		} finally {
+			if (em != null || em.isOpen()) {
+				em.close();
+			}
+		}
+		
+		return dtoMovie;
 	}
 
-	public Movie updateMovie(int id) {
+	public Movie updateMovie(long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -7,27 +7,41 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import changkon.imj.dto.Movie;
 
 @Path("/movie")
 public interface IMovieResource {
 
+	/**
+	 * <p>Creates a new movie object and places it into database</p>
+	 * <p>Should return a Created 201 message indicating URI of created object</p>
+	 * @param movie
+	 * @return URI of created movie
+	 */
+	
 	@POST
 	@Consumes("application/xml")
-	public Movie createMovie(Movie movie);
+	public Response createMovie(Movie movie);
 	
 	@GET
 	@Produces("application/xml")
 	public Movie queryMovieList();
 	
+	/**
+	 * Returns XML of movie
+	 * @param id
+	 * @return 200 "OK" HTTP if Movie isn't null else 204 "No Content"
+	 */
+	
 	@GET
 	@Produces("application/xml")
 	@Path("{id:\\d+}")
-	public Movie queryMovie(@PathParam("id") int id);
+	public Movie queryMovie(@PathParam("id") long id);
 	
 	@PUT
 	@Produces("application/xml")
 	@Path("{id:\\d+}")
-	public Movie updateMovie(@PathParam("id") int id);
+	public Movie updateMovie(@PathParam("id") long id);
 }

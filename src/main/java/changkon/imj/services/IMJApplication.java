@@ -15,6 +15,9 @@ import changkon.imj.converters.MovieConverter;
 @ApplicationPath("/services")
 public class IMJApplication extends Application {
 
+	public static String PERSISTENCEUNIT = "IMJ";
+	public static String BASEURI = "http://localhost:10003/services";
+	
 	private Set<Object> singletons = new HashSet<Object>();
 	private Set<Class<?>> components = new HashSet<Class<?>>();
 	
