@@ -3,6 +3,7 @@ package changkon.imj.domain;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +16,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
-
-import org.joda.time.DateTime;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Movie class representing a movie, containing relevant information about the film
@@ -29,10 +30,13 @@ public class Movie {
 	
 	@Id
 	@GeneratedValue(generator="ID_GENERATOR")
+	@Column(name="ID")
 	private Long id;
 	
+	@Column(name="TITLE")
 	private String title;
 	
+	@Column(name="DIRECTOR")
 	private String director;
 	
 	@ElementCollection
@@ -44,23 +48,30 @@ public class Movie {
 			generator = "ID_GENERATOR")
 	private Collection<String> cast = new ArrayList<String>();
 	
+	@Column(name="DESCRIPTION")
 	private String description;
 	
 	@Enumerated
+	@Column(name="GENRE")
 	private Genre genre;
 	
 	@ElementCollection
 	@CollectionTable(name="RELEASES")
 	@MapKeyColumn(name="COUNTRY")
 	@Column(name="DATE")
-	private Map<String, DateTime> release = new HashMap<String, DateTime>();
+	@Temporal(TemporalType.DATE)
+	private Map<String, Date> release = new HashMap<String, Date>();
 	
+	@Column(name="COUNTRY")
 	private String country;
 	
+	@Column(name="LANGUAGE")
 	private String language;
 	
+	@Column(name="RUNTIME")
 	private int runtime;
 	
+	@Column(name="URL", nullable=true)
 	private URL poster;
 	
 	/**
@@ -88,7 +99,7 @@ public class Movie {
 			Collection<String> cast,
 			String description,
 			Genre genre,
-			Map<String, DateTime> release,
+			Map<String, Date> release,
 			String country,
 			String language,
 			int runtime,
@@ -218,7 +229,7 @@ public class Movie {
 	 * Get release dates for movie
 	 * @return
 	 */
-	public Map<String, DateTime> getRelease() {
+	public Map<String, Date> getRelease() {
 		return release;
 	}
 
@@ -226,7 +237,7 @@ public class Movie {
 	 * Set release date for movie
 	 * @param release
 	 */
-	public void setRelease(Map<String, DateTime> release) {
+	public void setRelease(Map<String, Date> release) {
 		this.release = release;
 	}
 
@@ -235,7 +246,7 @@ public class Movie {
 	 * @param country
 	 * @param date
 	 */
-	public void addReleaseDate(String country, DateTime date) {
+	public void addReleaseDate(String country, Date date) {
 		release.put(country, date);
 	}
 	

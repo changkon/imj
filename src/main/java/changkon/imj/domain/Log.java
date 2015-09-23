@@ -1,5 +1,7 @@
 package changkon.imj.domain;
 
+import java.util.Date;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -12,14 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
 
 /**
  * Log entry of movie viewing
@@ -48,8 +49,8 @@ public class Log {
 	
 	@XmlElement
 	@Column(nullable=false, name="DATE")
-	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime date;
+	@Temporal(TemporalType.DATE)
+	private Date date;
 	
 	@XmlElement(name="geo-location")
 	@Embedded
@@ -67,7 +68,7 @@ public class Log {
 	 * @param viewer
 	 * @param movie
 	 */
-	public Log(DateTime date, GeoLocation geoLocation, Viewer viewer, Movie movie) {
+	public Log(Date date, GeoLocation geoLocation, Viewer viewer, Movie movie) {
 		this.date = date;
 		this.geoLocation = geoLocation;
 		this.viewer = viewer;
@@ -77,7 +78,7 @@ public class Log {
 	/**
 	 * @return Date of Log entry
 	 */
-	public DateTime getDate() {
+	public Date getDate() {
 		return date;
 	}
 
@@ -85,7 +86,7 @@ public class Log {
 	 * Sets date of Log entry
 	 * @param date
 	 */
-	public void setDate(DateTime date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
