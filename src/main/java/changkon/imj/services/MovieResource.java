@@ -1,20 +1,26 @@
 package changkon.imj.services;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.LockModeType;
 import javax.persistence.Persistence;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.MovieMapper;
+import changkon.imj.dto.Movies;
 
 public class MovieResource implements IMovieResource {
 
@@ -49,9 +55,34 @@ public class MovieResource implements IMovieResource {
 		return Response.created(URI.create("/movie/" + movie.getId())).build();
 	}
 
-	public Movie queryMovieList() {
-		// TODO Auto-generated method stub
-		return null;
+	public Movies queryMovieList() {
+		Movies movies = new Movies();
+		
+		List<Movie> movieList = new ArrayList<Movie>();
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			EntityTransaction tx = em.getTransaction();
+			
+			tx.begin();
+			
+			// If I put query with lock type, it throws error
+			List<changkon.imj.domain.Movie> domainMovieList = em.createQuery("SELECT m FROM Movie m", changkon.imj.domain.Movie.class)
+					.getResultList();
+			
+			for (changkon.imj.domain.Movie movie : domainMovieList) {
+				movieList.add(MovieMapper.toDTOModel(movie));
+			}
+			
+			tx.commit();
+		} finally {
+			if (em != null || em.isOpen()) {
+				em.close();
+			}
+			movies.setMovies(movieList);
+		}
+		
+		return movies;
 	}
 
 	public Movie queryMovie(long id) {

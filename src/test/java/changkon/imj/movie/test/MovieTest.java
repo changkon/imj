@@ -1,13 +1,15 @@
 package changkon.imj.movie.test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
@@ -17,8 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import changkon.imj.domain.Genre;
 import changkon.imj.dto.Movie;
+import changkon.imj.dto.Movies;
+import changkon.imj.jaxb.JAXBMarshalPrint;
 import changkon.imj.services.IMJApplication;
-import junit.framework.Assert;
 
 public class MovieTest {
 
@@ -59,6 +62,23 @@ public class MovieTest {
 			logger.info("URI for new movie is: " + location);
 			response.close();
 			
+		} finally {
+			client.close();
+		}
+	}
+	
+	@Test
+	public void testMovieGetAll() {
+		logger.info("Querying all movies");
+		
+		Client client = ClientBuilder.newClient();
+		try {
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
+			Movies movies = target.request().get(Movies.class);
+			
+			logger.info("Printing movies list");
+			
+			JAXBMarshalPrint.marshalPrint(movies, Movies.class, logger);
 		} finally {
 			client.close();
 		}
@@ -110,6 +130,9 @@ public class MovieTest {
 			
 			logger.info("Queried movie is equal to movie created earlier");
 			
+			logger.info("Printing queried movie");
+			JAXBMarshalPrint.marshalPrint(queryMovie, Movie.class, logger);
+			
 		} finally {
 			client.close();
 		}
@@ -131,6 +154,9 @@ public class MovieTest {
 			movie.setRuntime(60);
 			movie.setGenre(Genre.ACTION);
 			movie.setRelease(new DateTime(1941, 9, 5, 0, 0));
+			
+			logger.info("Print incorrect movie");
+			JAXBMarshalPrint.marshalPrint(movie, Movie.class, logger);
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			Response response = target.request().post(Entity.xml(movie));
@@ -165,6 +191,9 @@ public class MovieTest {
 			assertTrue(correctMovie.equals(queryMovie));
 			
 			logger.info("Movie has been updated successfully");
+			
+			logger.info("Printing updated movie");
+			JAXBMarshalPrint.marshalPrint(queryMovie, Movie.class, logger);
 			
 		} finally {
 			client.close();
