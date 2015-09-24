@@ -1,6 +1,7 @@
 package changkon.imj.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -36,7 +37,7 @@ public abstract class Person {
 	private int age;
 	
 	@XmlElement
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private Gender gender;
 	
 	@XmlElement
