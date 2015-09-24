@@ -40,8 +40,14 @@ public interface IMovieResource {
 	@Path("{id:\\d+}")
 	public Movie queryMovie(@PathParam("id") long id);
 	
+	/**
+	 * Updates the movie specified in id with new DTO movie
+	 * @param id
+	 * @return 204 No Content
+	 */
+	
 	@PUT
 	@Produces("application/xml")
 	@Path("{id:\\d+}")
-	public Movie updateMovie(@PathParam("id") long id);
+	public void updateMovie(@PathParam("id") long id, Movie movie);
 }

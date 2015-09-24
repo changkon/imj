@@ -201,4 +201,42 @@ public class Movie {
 		this.runtime = runtime;
 	}
 
+	/**
+	 * Returns if movie is equal to another movie
+	 * @param other
+	 * @return
+	 */
+	public boolean equals(Movie other) {
+		
+		if (!(title.equals(other.getTitle()))) {
+			return false;
+		}
+		
+		if (!(director.equals(other.getDirector()))) {
+			return false;
+		}
+		
+		if (!(genre == other.getGenre())) {
+			return false;
+		}
+		
+		if (!(language.equals(other.getLanguage()))) {
+			return false;
+		}
+		
+		if (!(country.equals(other.getCountry()))) {
+			return false;
+		}
+		
+		if (!(runtime == other.getRuntime())) {
+			return false;
+		}
+		
+		if (!(release.toLocalDate().equals(other.getRelease().toLocalDate()))) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 }

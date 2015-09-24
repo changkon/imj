@@ -83,16 +83,11 @@ public class MovieTest {
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			Response response = target.request().post(Entity.xml(movie));
-			int status = response.getStatus();
 			
-			if (status != 201) {
-				logger.error("Failed to create movie. Web service responded with: " + status);
-				fail();
-			}
+			String location = response.getLocation().toString();
 			
 			response.close();
 			
-			String location = response.getLocation().toString();
 			logger.info("URI for new movie is: " + location);
 			
 			String[] split = location.split("/");
@@ -111,13 +106,7 @@ public class MovieTest {
 			}
 			
 			// Compare movie
-			assertEquals(movie.getTitle(), queryMovie.getTitle());
-			assertEquals(movie.getDirector(), queryMovie.getDirector());
-			assertEquals(movie.getGenre(), queryMovie.getGenre());
-			assertEquals(movie.getLanguage(), queryMovie.getLanguage());
-			assertTrue(movie.getRelease().toLocalDate().isEqual(queryMovie.getRelease().toLocalDate()));
-			assertEquals(movie.getCountry(), queryMovie.getCountry());
-			assertEquals(movie.getRuntime(), queryMovie.getRuntime());
+			assertTrue(movie.equals(queryMovie));
 			
 			logger.info("Queried movie is equal to movie created earlier");
 			
@@ -125,6 +114,61 @@ public class MovieTest {
 			client.close();
 		}
 		
+	}
+	
+	@Test
+	public void testMovieUpdate() {
+		logger.info("Updating movie");
+		
+		Client client = ClientBuilder.newClient();
+		try {
+			// Have to create movie first. Has incorrect information
+			Movie movie = new Movie();
+			movie.setTitle("Citizen Kane");
+			movie.setDirector("Orson Welles");
+			movie.setCountry("USA");
+			movie.setLanguage("French");
+			movie.setRuntime(60);
+			movie.setGenre(Genre.ACTION);
+			movie.setRelease(new DateTime(1941, 9, 5, 0, 0));
+			
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
+			Response response = target.request().post(Entity.xml(movie));
+			String location = response.getLocation().toString();
+			response.close();
+			
+			logger.info("URI for new movie is: " + location);
+			
+			String[] split = location.split("/");
+			
+			long id = Long.parseLong(split[split.length-1]);
+			logger.info("Created movie id is: " + id);
+			
+			logger.info("Updating created movie details");
+			Movie correctMovie = new Movie();
+			correctMovie.setTitle("Citizen Kane");
+			correctMovie.setDirector("Orson Welles");
+			correctMovie.setCountry("USA");
+			correctMovie.setLanguage("English");
+			correctMovie.setRuntime(119);
+			correctMovie.setGenre(Genre.DRAMAFILM);
+			correctMovie.setRelease(new DateTime(1941, 9, 5, 0, 0));
+			
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", id);
+			response = target.request().put(Entity.xml(correctMovie));
+			response.close();
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", id);
+			
+			Movie queryMovie = target.request().get(Movie.class);
+			response.close();
+			// Check that updated values are correct
+			assertTrue(correctMovie.equals(queryMovie));
+			
+			logger.info("Movie has been updated successfully");
+			
+		} finally {
+			client.close();
+		}
 	}
 	
 }
