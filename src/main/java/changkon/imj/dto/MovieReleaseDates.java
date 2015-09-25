@@ -2,15 +2,25 @@ package changkon.imj.dto;
 
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.DateTime;
 
-@XmlRootElement(name="releases")
-public class MovieReleaseDates {
+import changkon.imj.jaxb.ReleaseAdapter;
 
-	@XmlElement(name="release")
+/**
+ * Data transmission object for sending/receiving information about movie release dates
+ * @author Chang Kon Han
+ */
+
+@XmlRootElement(name="release-info")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class MovieReleaseDates {
+	
+	@XmlJavaTypeAdapter(ReleaseAdapter.class)
 	private Map<String, DateTime> releases;
 	
 	public MovieReleaseDates() {}

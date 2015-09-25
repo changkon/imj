@@ -1,5 +1,7 @@
 package changkon.imj.dto;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 
@@ -37,5 +39,25 @@ public class MovieMapper {
 		dtoMovie.setRuntime(movie.getRuntime());
 		
 		return dtoMovie;
+	}
+	
+	public static Map<String, Date> toDateUtil(Map<String, DateTime> dtoRelease) {
+		Map<String, Date> releaseDates = new HashMap<String, Date>();
+		
+		for (Map.Entry<String, DateTime> entry : dtoRelease.entrySet()) {
+			releaseDates.put(entry.getKey(), entry.getValue().toDate());
+		}
+		
+		return releaseDates;
+	}
+	
+	public static Map<String, DateTime> toDateJoda(Map<String, Date> release) {
+		Map<String, DateTime> releaseDates = new HashMap<String, DateTime>();
+		
+		for (Map.Entry<String, Date> entry : release.entrySet()) {
+			releaseDates.put(entry.getKey(), new DateTime(entry.getValue()));
+		}
+		
+		return releaseDates;
 	}
 }

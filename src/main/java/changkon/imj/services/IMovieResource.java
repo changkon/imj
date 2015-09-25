@@ -30,6 +30,11 @@ public interface IMovieResource {
 	@Consumes("application/xml")
 	public Response createMovie(Movie movie);
 	
+	/**
+	 * Queries database for all movies in database
+	 * @return List of movies in database
+	 */
+	
 	@GET
 	@Produces("application/xml")
 	public Movies queryMovieList();
@@ -56,40 +61,88 @@ public interface IMovieResource {
 	@Path("{id:\\d+}")
 	public void updateMovie(@PathParam("id") long id, Movie movie);
 
+	/**
+	 * Returns cast for movie identified by id
+	 * @param id
+	 * @return 200 "OK" HTTP if MovieCast isn't null else 204 "No Content"
+	 */
+	
 	@GET
 	@Produces("application/xml")
 	@Path("{id:\\d+}/cast")
 	public MovieCast queryCast(@PathParam("id") long id);
+	
+	/**
+	 * Sets the cast for movie identified by id
+	 * @param id
+	 * @param cast
+	 */
 	
 	@PUT
 	@Consumes("application/xml")
 	@Path("{id:\\d+}/cast")
 	public void updateCast(@PathParam("id") long id, MovieCast cast);
 	
+	/**
+	 * Returns movie description
+	 * @param id
+	 * @return 200 "OK" HTTP if MovieDescription isn't null else 204 "No Content"
+	 */
+	
 	@GET
 	@Produces("application/xml")
 	@Path("{id:\\d+}/description")
 	public MovieDescription queryDescription(@PathParam("id") long id);
 
+	/**
+	 * Updates movie description of movie
+	 * @param id
+	 * @param description
+	 */
+	
 	@PUT
 	@Consumes("application/xml")
 	@Path("{id:\\d+}/description")
 	public void updateDescription(@PathParam("id") long id, MovieDescription description);
+	
+	/**
+	 * Returns list of release dates for movie
+	 * @param id
+	 * @return 200 "OK" HTTP if MovieReleaseDates isn't null else 204 "No Content"
+	 */
 	
 	@GET
 	@Produces("application/xml")
 	@Path("{id:\\d+}/release")
 	public MovieReleaseDates queryReleaseDates(@PathParam("id") long id);
 	
+	/**
+	 * Updates release dates for movie
+	 * @param id
+	 * @param movieReleaseDates
+	 */
+	
 	@PUT
 	@Consumes("application/xml")
 	@Path("{id:\\d+}/release")
 	public void updateReleaseDates(@PathParam("id") long id, MovieReleaseDates movieReleaseDates);
 	
+	/**
+	 * Returns URL for movie poster
+	 * @param id
+	 * @return 200 "OK" HTTP if MoviePoster isn't null else 204 "No Content"
+	 */
+	
 	@GET
 	@Produces("application/xml")
 	@Path("{id:\\d+}/poster")
 	public MoviePoster queryPoster(@PathParam("id") long id);
+	
+	/**
+	 * Updates movie poster URL
+	 * @param id
+	 * @param poster
+	 */
 	
 	@PUT
 	@Consumes("application/xml")

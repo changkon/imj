@@ -1,8 +1,8 @@
 package changkon.imj.services;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,12 +10,10 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.LockModeType;
 import javax.persistence.Persistence;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +50,7 @@ public class MovieResource implements IMovieResource {
 		} catch (Exception e) {
 			logger.error("Error occurred in creating Movie");
 		} finally {
-			if (em != null || em.isOpen()) {
+			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
@@ -83,7 +81,7 @@ public class MovieResource implements IMovieResource {
 		} catch (Exception e) {
 			logger.error("Querying movie list resulted in error");
 		} finally {
-			if (em != null || em.isOpen()) {
+			if (em.isOpen() || em != null) {
 				em.close();
 			}
 			movies.setMovies(movieList);
@@ -109,7 +107,7 @@ public class MovieResource implements IMovieResource {
 		} catch (Exception e) {
 			logger.error("Error querying movie");
 		} finally {
-			if (em != null || em.isOpen()) {
+			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
@@ -146,7 +144,7 @@ public class MovieResource implements IMovieResource {
 		} catch (Exception e) {
 			logger.error("Error updating movie");
 		} finally {
-			if (em != null || em.isOpen()) {
+			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
@@ -171,7 +169,7 @@ public class MovieResource implements IMovieResource {
 		} catch (Exception e) {
 			logger.error("Error retrieving movie cast");
 		} finally {
-			if (em != null || em.isOpen()) {
+			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
@@ -196,12 +194,11 @@ public class MovieResource implements IMovieResource {
 		} catch (Exception e) {
 			logger.error("Error updating cast for movie");
 		} finally {
-			if (em != null || em.isOpen()) {
+			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 	}
-
 
 	public MovieDescription queryDescription(long id) {
 		MovieDescription description = new MovieDescription();
@@ -220,7 +217,7 @@ public class MovieResource implements IMovieResource {
 		} catch (Exception e) {
 			logger.error("Error querying movie description");
 		} finally {
-			if (em != null || em.isOpen()) {
+			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
@@ -243,38 +240,108 @@ public class MovieResource implements IMovieResource {
 		} catch (Exception e) {
 			logger.error("Error updating description");
 		} finally {
-			if (em != null || em.isOpen()) {
+			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 	}
 
-	
 	public MovieReleaseDates queryReleaseDates(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		MovieReleaseDates releaseDates = new MovieReleaseDates();
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			// Start a transaction to persist Movie object
+			EntityTransaction tx = em.getTransaction();
+			
+			tx.begin();
+			
+			changkon.imj.domain.Movie movie = em.find(changkon.imj.domain.Movie.class, id);
+			Map<String, DateTime> releaseDatesMap = MovieMapper.toDateJoda(movie.getRelease());
+			releaseDates.setReleases(releaseDatesMap);
+			tx.commit();
+			
+		} catch (Exception e) {
+			logger.error("Error querying release dates");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
+		
+		return releaseDates;
 	}
 
-	
 	public void updateReleaseDates(long id, MovieReleaseDates movieReleaseDates) {
-		// TODO Auto-generated method stub
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
+		try {
+			// Start a transaction to persist Movie object
+			EntityTransaction tx = em.getTransaction();
+			
+			tx.begin();
+			
+			changkon.imj.domain.Movie movie = em.find(changkon.imj.domain.Movie.class, id);
+			Map<String, Date> releaseDatesMap = MovieMapper.toDateUtil(movieReleaseDates.getReleases());
+			movie.setRelease(releaseDatesMap);
+			tx.commit();
+			
+		} catch (Exception e) {
+			logger.error("Error updating release dates");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
 	}
 
-	
 	public MoviePoster queryPoster(long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	public void updatePoster(long id, MoviePoster poster) {
-		// TODO Auto-generated method stub
+		MoviePoster poster = new MoviePoster();
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
+		try {
+			EntityTransaction tx = em.getTransaction();
+			tx.begin();
+			
+			changkon.imj.domain.Movie domainMovie = em.find(changkon.imj.domain.Movie.class, id);
+			
+			poster.setUrl(domainMovie.getPoster().toString());;
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			logger.error("Error querying movie poster");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
+		
+		return poster;
 	}
 
-
-	
-
+	public void updatePoster(long id, MoviePoster poster) {
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			// Start a transaction to persist Movie object
+			EntityTransaction tx = em.getTransaction();
+			
+			tx.begin();
+			
+			changkon.imj.domain.Movie movie = em.find(changkon.imj.domain.Movie.class, id);
+			
+			movie.setPoster(new URL(poster.getUrl()));
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			logger.error("Error updating movie poster");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
+	}
 
 }

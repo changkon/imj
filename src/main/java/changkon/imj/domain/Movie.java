@@ -57,12 +57,12 @@ public class Movie {
 	@Column(name="GENRE")
 	private Genre genre;
 	
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name="RELEASES")
 	@MapKeyColumn(name="COUNTRY")
 	@Column(name="DATE")
 	@Temporal(TemporalType.DATE)
-	private Map<String, Date> release = new HashMap<String, Date>();
+	private Map<String, Date> releases = new HashMap<String, Date>();
 	
 	@Column(name="COUNTRY")
 	private String country;
@@ -101,7 +101,7 @@ public class Movie {
 			Collection<String> cast,
 			String description,
 			Genre genre,
-			Map<String, Date> release,
+			Map<String, Date> releases,
 			String country,
 			String language,
 			int runtime,
@@ -114,7 +114,7 @@ public class Movie {
 		this.cast = cast;
 		this.description = description;
 		this.genre = genre;
-		this.release = release;
+		this.releases = releases;
 		this.country = country;
 		this.language = language;
 		this.runtime = runtime;
@@ -232,7 +232,7 @@ public class Movie {
 	 * @return
 	 */
 	public Map<String, Date> getRelease() {
-		return release;
+		return releases;
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class Movie {
 	 * @param release
 	 */
 	public void setRelease(Map<String, Date> release) {
-		this.release = release;
+		this.releases = release;
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class Movie {
 	 * @param date
 	 */
 	public void addReleaseDate(String country, Date date) {
-		release.put(country, date);
+		releases.put(country, date);
 	}
 	
 	/**
@@ -257,7 +257,7 @@ public class Movie {
 	 * @param country
 	 */
 	public void removeReleaseDate(String country) {
-		release.remove(country);
+		releases.remove(country);
 	}
 	
 	/**
