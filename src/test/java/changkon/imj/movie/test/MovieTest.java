@@ -247,7 +247,7 @@ public class MovieTest {
 			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/cast").resolveTemplate("id", id);
 			response = target.request().put(Entity.xml(movieCast));
 			response.close();
-			
+
 			int status = response.getStatus();
 			
 			if (status != 204) {
@@ -334,4 +334,13 @@ public class MovieTest {
 		
 	}
 	
+	@Test
+	public void testMovieDescriptionGet() {
+		
+	}
+	
+	@Test
+	public void testMovieDescriptionUpdate() {
+		
+	}
 }

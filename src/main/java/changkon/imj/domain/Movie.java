@@ -13,6 +13,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
@@ -40,7 +41,7 @@ public class Movie {
 	@Column(name="DIRECTOR")
 	private String director;
 	
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name="CAST")
 	@Column(name="NAME")
 	@org.hibernate.annotations.CollectionId(

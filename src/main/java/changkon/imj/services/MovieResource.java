@@ -21,7 +21,10 @@ import org.slf4j.LoggerFactory;
 
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.MovieCast;
+import changkon.imj.dto.MovieDescription;
 import changkon.imj.dto.MovieMapper;
+import changkon.imj.dto.MoviePoster;
+import changkon.imj.dto.MovieReleaseDates;
 import changkon.imj.dto.Movies;
 
 public class MovieResource implements IMovieResource {
@@ -151,33 +154,6 @@ public class MovieResource implements IMovieResource {
 		// TODO Auto-generated method stub
 	}
 
-	public void updateCast(long id, MovieCast cast) {
-		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
-		
-		try {
-			EntityTransaction tx = em.getTransaction();
-			tx.begin();
-			
-			// Get movie indicated by id
-			changkon.imj.domain.Movie domainMovie = em.find(changkon.imj.domain.Movie.class, id);
-			
-			Collection<String> castMembers = cast.getCast();
-			
-			for (String member : castMembers) {
-				domainMovie.addCastMember(member);
-			}
-			
-			tx.commit();
-			
-		} catch (Exception e) {
-			logger.error("Error updating cast for movie");
-		} finally {
-			if (em != null || em.isOpen()) {
-				em.close();
-			}
-		}
-	}
-
 	public MovieCast queryCast(long id) {
 		MovieCast movieCast = new MovieCast();
 		
@@ -202,5 +178,103 @@ public class MovieResource implements IMovieResource {
 		
 		return movieCast;
 	}
+	
+	public void updateCast(long id, MovieCast cast) {
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			EntityTransaction tx = em.getTransaction();
+			tx.begin();
+			
+			// Get movie indicated by id
+			changkon.imj.domain.Movie domainMovie = em.find(changkon.imj.domain.Movie.class, id);
+			
+			domainMovie.setCast(cast.getCast());
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			logger.error("Error updating cast for movie");
+		} finally {
+			if (em != null || em.isOpen()) {
+				em.close();
+			}
+		}
+	}
+
+
+	public MovieDescription queryDescription(long id) {
+		MovieDescription description = new MovieDescription();
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			EntityTransaction tx = em.getTransaction();
+			tx.begin();
+			
+			changkon.imj.domain.Movie domainMovie = em.find(changkon.imj.domain.Movie.class, id);
+			
+			description.setDescription(domainMovie.getDescription());
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			logger.error("Error querying movie description");
+		} finally {
+			if (em != null || em.isOpen()) {
+				em.close();
+			}
+		}
+		
+		return description;
+	}
+	
+	public void updateDescription(long id, MovieDescription description) {
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		try {
+			EntityTransaction tx = em.getTransaction();
+			tx.begin();
+			
+			// Get movie indicated by id
+			changkon.imj.domain.Movie domainMovie = em.find(changkon.imj.domain.Movie.class, id);
+			domainMovie.setDescription(description.getDescription());
+			
+			tx.commit();
+			
+		} catch (Exception e) {
+			logger.error("Error updating description");
+		} finally {
+			if (em != null || em.isOpen()) {
+				em.close();
+			}
+		}
+	}
+
+	
+	public MovieReleaseDates queryReleaseDates(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	public void updateReleaseDates(long id, MovieReleaseDates movieReleaseDates) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	public MoviePoster queryPoster(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	public void updatePoster(long id, MoviePoster poster) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	
+
 
 }

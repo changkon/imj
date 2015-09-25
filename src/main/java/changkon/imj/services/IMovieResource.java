@@ -11,6 +11,9 @@ import javax.ws.rs.core.Response;
 
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.MovieCast;
+import changkon.imj.dto.MovieDescription;
+import changkon.imj.dto.MoviePoster;
+import changkon.imj.dto.MovieReleaseDates;
 import changkon.imj.dto.Movies;
 
 @Path("/movie")
@@ -52,6 +55,11 @@ public interface IMovieResource {
 	@Consumes("application/xml")
 	@Path("{id:\\d+}")
 	public void updateMovie(@PathParam("id") long id, Movie movie);
+
+	@GET
+	@Produces("application/xml")
+	@Path("{id:\\d+}/cast")
+	public MovieCast queryCast(@PathParam("id") long id);
 	
 	@PUT
 	@Consumes("application/xml")
@@ -60,6 +68,32 @@ public interface IMovieResource {
 	
 	@GET
 	@Produces("application/xml")
-	@Path("{id:\\d+}/cast")
-	public MovieCast queryCast(@PathParam("id") long id);
+	@Path("{id:\\d+}/description")
+	public MovieDescription queryDescription(@PathParam("id") long id);
+
+	@PUT
+	@Consumes("application/xml")
+	@Path("{id:\\d+}/description")
+	public void updateDescription(@PathParam("id") long id, MovieDescription description);
+	
+	@GET
+	@Produces("application/xml")
+	@Path("{id:\\d+}/release")
+	public MovieReleaseDates queryReleaseDates(@PathParam("id") long id);
+	
+	@PUT
+	@Consumes("application/xml")
+	@Path("{id:\\d+}/release")
+	public void updateReleaseDates(@PathParam("id") long id, MovieReleaseDates movieReleaseDates);
+	
+	@GET
+	@Produces("application/xml")
+	@Path("{id:\\d+}/poster")
+	public MoviePoster queryPoster(@PathParam("id") long id);
+	
+	@PUT
+	@Consumes("application/xml")
+	@Path("{id:\\d+}/poster")
+	public void updatePoster(@PathParam("id") long id, MoviePoster poster);
+
 }
