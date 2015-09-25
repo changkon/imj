@@ -1,7 +1,5 @@
 package changkon.imj.services;
 
-import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -10,10 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import changkon.imj.dto.Movie;
+import changkon.imj.dto.MovieCast;
 import changkon.imj.dto.Movies;
 
 @Path("/movie")
@@ -52,7 +49,17 @@ public interface IMovieResource {
 	 */
 	
 	@PUT
-	@Produces("application/xml")
+	@Consumes("application/xml")
 	@Path("{id:\\d+}")
 	public void updateMovie(@PathParam("id") long id, Movie movie);
+	
+	@PUT
+	@Consumes("application/xml")
+	@Path("{id:\\d+}/cast")
+	public void updateCast(@PathParam("id") long id, MovieCast cast);
+	
+	@GET
+	@Produces("application/xml")
+	@Path("{id:\\d+}/cast")
+	public MovieCast queryCast(@PathParam("id") long id);
 }

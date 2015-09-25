@@ -1,11 +1,10 @@
 package changkon.imj.dto;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -13,13 +12,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Chang Kon Han
  */
 
-@XmlRootElement
+@XmlRootElement(name="cast")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MovieCast {
 
-	@XmlElementWrapper(name="cast")
 	@XmlElement(name="cast-member")
-	private List<String> cast;
+	private Collection<String> cast;
 	
 	/**
 	 * Default constructor. Javabean convention
@@ -30,7 +28,7 @@ public class MovieCast {
 	 * @return Cast for movie
 	 */
 	
-	public List<String> getCast() {
+	public Collection<String> getCast() {
 		return cast;
 	}
 
@@ -39,7 +37,7 @@ public class MovieCast {
 	 * @param cast
 	 */
 	
-	public void setCast(List<String> cast) {
+	public void setCast(Collection<String> cast) {
 		this.cast = cast;
 	}
 	
