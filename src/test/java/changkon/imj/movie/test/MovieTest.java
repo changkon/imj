@@ -250,12 +250,13 @@ public class MovieTest {
 			
 			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/cast").resolveTemplate("id", id);
 			response = target.request().put(Entity.xml(movieCast));
-			response.close();
 
 			int status = response.getStatus();
 			
+			response.close();
 			if (status != 204) {
 				logger.error("Failed to update movie cast. Returned with response code: " + status);
+				fail();
 			}
 			
 			// Should be 204 No Content

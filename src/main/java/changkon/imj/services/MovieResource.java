@@ -148,8 +148,6 @@ public class MovieResource implements IMovieResource {
 				em.close();
 			}
 		}
-		
-		// TODO Auto-generated method stub
 	}
 
 	public MovieCast queryCast(long id) {

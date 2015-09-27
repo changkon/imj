@@ -1,5 +1,6 @@
 package changkon.imj.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -9,11 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.slf4j.LoggerFactory;
 
@@ -23,23 +19,17 @@ import org.slf4j.LoggerFactory;
  */
 @Entity
 @Table(name="VIEWER")
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Viewer extends Person implements Subscriber {
 	
-	@XmlElementWrapper(name="logs")
-	@XmlElement(name="log")
-	@OneToMany(mappedBy="viewer", fetch=FetchType.LAZY)
-	private Set<Log> movieLog;
+	@OneToMany(mappedBy="viewer", fetch=FetchType.EAGER, cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	private Set<Log> movieLog = new HashSet<Log>();
 	
-	@XmlElementWrapper(name="recommended-movies")
-	@XmlElement(name="movie")
-	@OneToMany(cascade=CascadeType.PERSIST)
+	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	@JoinTable(
 			name="RECOMMENDEDMOVIES",
 			joinColumns=@JoinColumn(name="VIEWER_ID"),
 			inverseJoinColumns=@JoinColumn(name="MOVIE_ID"))
-	private Set<Movie> recommendedMovies;
+	private Set<Movie> recommendedMovies = new HashSet<Movie>();
 	
 	/**
 	 * Default constructor. Javabean convention
@@ -67,6 +57,7 @@ public class Viewer extends Person implements Subscriber {
 	 */
 	public void addMovieLog(Log log) {
 		movieLog.add(log);
+		log.setViewer(this);
 	}
 	
 	/**
@@ -75,6 +66,7 @@ public class Viewer extends Person implements Subscriber {
 	 */
 	public void removeMovieLog(Log log) {
 		movieLog.remove(log);
+		log.setViewer(null);
 	}
 	
 	/**

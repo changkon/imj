@@ -1,5 +1,6 @@
 package changkon.imj.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,6 +11,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -24,22 +26,28 @@ public abstract class Person {
 	
 	@Id
 	@GeneratedValue(generator="ID_GENERATOR")
-	@XmlElement
+	@XmlAttribute(name="id")
+	@Column(name="ID")
 	private Long id;
 	
+	@Column(name="FIRSTNAME")
 	@XmlElement(name="first-name")
 	private String firstName;
 	
+	@Column(name="LASTNAME")
 	@XmlElement(name="last-name")
 	private String lastName;
 	
+	@Column(name="AGE")
 	@XmlElement
 	private int age;
 	
 	@XmlElement
 	@Enumerated(EnumType.STRING)
+	@Column(name="GENDER")
 	private Gender gender;
 	
+	@Column(name="COUNTRY")
 	@XmlElement
 	private String country;
 	

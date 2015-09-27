@@ -16,17 +16,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Log entry of movie viewing
  * @author Chang Kon Han
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Access(AccessType.FIELD)
 public class Log {
@@ -35,24 +29,20 @@ public class Log {
 	@GeneratedValue(generator="ID_GENERATOR")
 	private Long id;
 	
-	@XmlTransient
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name="VIEWER_ID", nullable=false)
 	private Viewer viewer;
 	
-	@XmlElement
 	@OneToOne(
 			optional=false,
 			cascade=CascadeType.PERSIST)
 	@JoinColumn(name="MOVIE_ID", nullable=false)
 	private Movie movie;
 	
-	@XmlElement
 	@Column(nullable=false, name="DATE")
 	@Temporal(TemporalType.DATE)
 	private Date date;
 	
-	@XmlElement(name="geo-location")
 	@Embedded
 	private GeoLocation geoLocation;
 	
@@ -133,14 +123,5 @@ public class Log {
 	 */
 	public void setMovie(Movie movie) {
 		this.movie = movie;
-	}
-	
-	/**
-	 * Places correct instance to variable during unmarshal
-	 * @param u
-	 * @param parent
-	 */
-	protected void afterUnmarshal(Unmarshaller u, Object parent) {
-		viewer = (Viewer)parent;
 	}
 }
