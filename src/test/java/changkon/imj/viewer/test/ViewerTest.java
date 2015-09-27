@@ -243,9 +243,11 @@ public class ViewerTest {
 			
 			long viewerId = Long.parseLong(split[split.length-1]);
 			
+			int timeDifference = 10;
+			
 			// Create mock movie
 			DateTime now = DateTime.now();
-			DateTime releaseDate = now.plusSeconds(10);
+			DateTime releaseDate = now.plusSeconds(timeDifference);
 			
 			Movie movie = new Movie();
 			movie.setTitle("Mock Title");
@@ -276,8 +278,19 @@ public class ViewerTest {
 
 			// Subscribing to movie. Get notification
 			final WebTarget targetNotification = client.target(IMJApplication.BASEURI + "/viewer/{viewerId:\\d+}/recommended/{movieId:\\d+}").resolveTemplates(resolveTemplateMap);
+			
+//			targetNotification.request().async().get(new InvocationCallback<String>() {
+//
+//				public void completed(String message) {
+//					logger.info("Received callback message for movie subscription");
+//					logger.info(message);
+//				}
+//
+//				public void failed(Throwable t) {}
+//
+//			});
 
-			Future<String> future1 = targetNotification.request().async().get(new InvocationCallback<String>() {
+			final Future<String> future1 = targetNotification.request().async().get(new InvocationCallback<String>() {
 				
 				public void completed(String message) {
 					logger.info("Received callback message for movie subscription");
@@ -288,9 +301,10 @@ public class ViewerTest {
 				
 			});
 			
+			logger.info("Waiting for movie subscription callback. Must wait " + timeDifference + "s");
+			
 			future1.get();
 			
-			logger.info("Waiting for movie subscription callback");
 
 		} catch (Exception e) {
 			e.printStackTrace();
