@@ -7,8 +7,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 
 import changkon.imj.dto.Movie;
@@ -29,7 +27,7 @@ public interface IMovieResource {
 	 */
 	
 	@POST
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	public Response createMovie(Movie movie);
 	
 	/**
@@ -38,7 +36,7 @@ public interface IMovieResource {
 	 */
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	public Movies queryMovieList();
 	
 	/**
@@ -48,7 +46,7 @@ public interface IMovieResource {
 	 */
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}")
 	public Movie queryMovie(@PathParam("id") long id);
 	
@@ -59,7 +57,7 @@ public interface IMovieResource {
 	 */
 	
 	@PUT
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	@Path("{id:\\d+}")
 	public void updateMovie(@PathParam("id") long id, Movie movie);
 
@@ -70,7 +68,7 @@ public interface IMovieResource {
 	 */
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}/cast")
 	public MovieCast queryCast(@PathParam("id") long id);
 	
@@ -81,7 +79,7 @@ public interface IMovieResource {
 	 */
 	
 	@PUT
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	@Path("{id:\\d+}/cast")
 	public void updateCast(@PathParam("id") long id, MovieCast cast);
 	
@@ -92,7 +90,7 @@ public interface IMovieResource {
 	 */
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}/description")
 	public MovieDescription queryDescription(@PathParam("id") long id);
 
@@ -103,7 +101,7 @@ public interface IMovieResource {
 	 */
 	
 	@PUT
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	@Path("{id:\\d+}/description")
 	public void updateDescription(@PathParam("id") long id, MovieDescription description);
 	
@@ -114,7 +112,7 @@ public interface IMovieResource {
 	 */
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}/release")
 	public MovieReleaseDates queryReleaseDates(@PathParam("id") long id);
 	
@@ -125,7 +123,7 @@ public interface IMovieResource {
 	 */
 	
 	@PUT
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	@Path("{id:\\d+}/release")
 	public void updateReleaseDates(@PathParam("id") long id, MovieReleaseDates movieReleaseDates);
 	
@@ -136,7 +134,7 @@ public interface IMovieResource {
 	 */
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}/poster")
 	public MoviePoster queryPoster(@PathParam("id") long id);
 	
@@ -147,7 +145,7 @@ public interface IMovieResource {
 	 */
 	
 	@PUT
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	@Path("{id:\\d+}/poster")
 	public void updatePoster(@PathParam("id") long id, MoviePoster poster);
 

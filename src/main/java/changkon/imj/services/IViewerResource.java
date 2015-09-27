@@ -21,7 +21,7 @@ import changkon.imj.dto.ViewerRecommendedMovies;
 public interface IViewerResource {
 
 	@POST
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	public Response createViewer(Viewer viewer);
 	
 	@DELETE
@@ -29,33 +29,33 @@ public interface IViewerResource {
 	public void deleteViewer(@PathParam("id") long id);
 	
 	@PUT
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	@Path("{id:\\d+}")
 	public void updateViewer(@PathParam("id") long id, Viewer viewer);
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}")
 	public Viewer queryViewer(@PathParam("id") long id);
 	
 	@POST
-	@Consumes("application/xml")
-	@Produces("application/xml")
+	@Consumes({"application/xml", "application/json"})
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}/log")
 	public Log createLog(@PathParam("id") long id, Log log);
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}/log")
 	public ViewerLogs queryLogs(@PathParam("id") long viewerId);
 	
 	@PUT
-	@Consumes("application/xml")
+	@Consumes({"application/xml", "application/json"})
 	@Path("{id:\\d+}/recommended")
 	public void updateRecommended(@PathParam("id") long viewerId, ViewerRecommendedMovies recommendedMovies);
 	
 	@GET
-	@Produces("application/xml")
+	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}/recommended")
 	public ViewerRecommendedMovies queryRecommended(@PathParam("id") long viewerId);
 	

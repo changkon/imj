@@ -27,7 +27,8 @@ import changkon.imj.dto.MovieDescription;
 import changkon.imj.dto.MoviePoster;
 import changkon.imj.dto.MovieReleaseDates;
 import changkon.imj.dto.Movies;
-import changkon.imj.jaxb.JAXBMarshalPrint;
+import changkon.imj.jackson.JsonPrint;
+import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
 
 public class MovieTest {
@@ -56,11 +57,12 @@ public class MovieTest {
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			
+			logger.info("Inputting xml");
 			Response response = target.request().post(Entity.xml(movie));
 			int status = response.getStatus();
 			
 			if (status != 201) {
-				logger.error("Failed to create movie. Web service responsed with: " + status);
+				logger.error("Failed to create movie with xml. Web service responsed with: " + status);
 				fail();
 			}
 			
@@ -68,6 +70,23 @@ public class MovieTest {
 			
 			logger.info("URI for new movie is: " + location);
 			response.close();
+			
+			logger.info("Inputting json");
+
+			response = target.request().post(Entity.json(movie));
+			status = response.getStatus();
+			
+			if (status != 201) {
+				logger.error("failed to create movie with json. Web service responded with: " + status);
+				fail();
+			}
+			
+			location = response.getLocation().toString();
+			
+			logger.info("URI for new movie is: " + location);
+			response.close();
+			
+			logger.info("Completed creating movie");
 			
 		} finally {
 			client.close();
@@ -81,11 +100,13 @@ public class MovieTest {
 		Client client = ClientBuilder.newClient();
 		try {
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Movies movies = target.request().get(Movies.class);
+			target.request().get(Movies.class);
 			
-			logger.info("Printing movies list");
+			//logger.info("Printing movies list");
 			
-			JAXBMarshalPrint.marshalPrint(movies, Movies.class, logger);
+			//JAXB.prettyPrint(movies, Movies.class, logger);
+			//JsonPrint.prettyPrint(movies, logger);
+			
 		} finally {
 			client.close();
 		}
@@ -138,7 +159,7 @@ public class MovieTest {
 			logger.info("Queried movie is equal to movie created earlier");
 			
 			logger.info("Printing queried movie");
-			JAXBMarshalPrint.marshalPrint(queryMovie, Movie.class, logger);
+			JAXB.prettyPrint(queryMovie, Movie.class, logger);
 			
 		} finally {
 			client.close();
@@ -163,7 +184,7 @@ public class MovieTest {
 			movie.setRelease(new DateTime(1941, 9, 5, 0, 0));
 			
 			logger.info("Print incorrect movie");
-			JAXBMarshalPrint.marshalPrint(movie, Movie.class, logger);
+			JAXB.prettyPrint(movie, Movie.class, logger);
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			Response response = target.request().post(Entity.xml(movie));
@@ -190,6 +211,7 @@ public class MovieTest {
 			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", id);
 			response = target.request().put(Entity.xml(correctMovie));
 			response.close();
+			
 			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", id);
 			
 			Movie queryMovie = target.request().get(Movie.class);
@@ -200,7 +222,7 @@ public class MovieTest {
 			logger.info("Movie has been updated successfully");
 			
 			logger.info("Printing updated movie");
-			JAXBMarshalPrint.marshalPrint(queryMovie, Movie.class, logger);
+			JAXB.prettyPrint(queryMovie, Movie.class, logger);
 			
 		} finally {
 			client.close();
@@ -225,7 +247,7 @@ public class MovieTest {
 			movie.setRuntime(119);
 			
 			logger.info("Printing created movie");
-			JAXBMarshalPrint.marshalPrint(movie, Movie.class, logger);
+			JAXB.prettyPrint(movie, Movie.class, logger);
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			Response response = target.request().post(Entity.xml(movie));
@@ -255,7 +277,17 @@ public class MovieTest {
 			
 			response.close();
 			if (status != 204) {
-				logger.error("Failed to update movie cast. Returned with response code: " + status);
+				logger.error("Failed to update movie cast xml. Returned with response code: " + status);
+				fail();
+			}
+			
+			response = target.request().put(Entity.json(movieCast));
+			
+			status = response.getStatus();
+			response.close();
+			
+			if (status != 204) {
+				logger.error("Failed to update movie cast with json. Returned with response code: " + status);
 				fail();
 			}
 			
@@ -285,7 +317,7 @@ public class MovieTest {
 			movie.setRuntime(169);
 			
 			logger.info("Printing created movie");
-			JAXBMarshalPrint.marshalPrint(movie, Movie.class, logger);
+			JAXB.prettyPrint(movie, Movie.class, logger);
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			Response response = target.request().post(Entity.xml(movie));
@@ -331,7 +363,7 @@ public class MovieTest {
 			assertTrue(retrieveMovieCastCollection.contains("Michael Caine"));
 			
 			logger.info("Printing movie cast");
-			JAXBMarshalPrint.marshalPrint(retrieveMovieCast, MovieCast.class, logger);
+			JAXB.prettyPrint(retrieveMovieCast, MovieCast.class, logger);
 			
 		} finally {
 			client.close();
@@ -389,7 +421,7 @@ public class MovieTest {
 			logger.info("Retrieved movie description matches");
 			logger.info("Printing movie description for movie id: " + id);
 			
-			JAXBMarshalPrint.marshalPrint(queryDescription, MovieDescription.class, logger);
+			JAXB.prettyPrint(queryDescription, MovieDescription.class, logger);
 			
 		} finally {
 			client.close();
@@ -441,8 +473,20 @@ public class MovieTest {
 			response.close();
 			
 			if (status != 204) {
-				logger.error("Failed to update movie description. Returned with response code: " + status);
+				logger.error("Failed to update movie description with xml. Returned with response code: " + status);
+				fail();
 			}
+			
+			response = target.request().put(Entity.json(description));
+			
+			status = response.getStatus();
+			
+			if (status != 204) {
+				logger.error("Failed to update movie description with json. Returned with response code: " + status);
+				fail();
+			}
+			
+			JsonPrint.prettyPrint(description, logger);
 			
 		} finally {
 			client.close();
@@ -508,9 +552,6 @@ public class MovieTest {
 			assertTrue(queryReleaseDateMap.get("Japan").toLocalDate().isEqual(releaseDateMap.get("Japan").toLocalDate()));
 			
 			logger.info("Retrieved movie release dates matches");
-			logger.info("Printing movie release dates for movie id: " + id);
-			
-			JAXBMarshalPrint.marshalPrint(queryReleaseDates, MovieReleaseDates.class, logger);
 			
 		} finally {
 			client.close();
@@ -565,7 +606,15 @@ public class MovieTest {
 			response.close();
 
 			if (status != 204) {
-				logger.error("Failed to update movie release dates. Returned with response code: " + status);
+				logger.error("Failed to update movie release dates with xml. Returned with response code: " + status);
+			}
+			
+			response = target.request().put(Entity.json(releaseDates));
+			status = response.getStatus();
+			response.close();
+
+			if (status != 204) {
+				logger.error("Failed to update movie release dates with json. Returned with response code: " + status);
 			}
 			
 		} finally {
@@ -624,7 +673,7 @@ public class MovieTest {
 			logger.info("Retrieved movie poster matches");
 			logger.info("Printing movie release dates for movie id: " + id);
 			
-			JAXBMarshalPrint.marshalPrint(queryMoviePoster, MoviePoster.class, logger);
+			JAXB.prettyPrint(queryMoviePoster, MoviePoster.class, logger);
 			
 		} finally {
 			client.close();
@@ -674,7 +723,15 @@ public class MovieTest {
 			response.close();
 			
 			if (status != 204) {
-				logger.error("Failed to update movie poster. Returned with response code: " + status);
+				logger.error("Failed to update movie poster with xml. Returned with response code: " + status);
+			}
+			
+			response = target.request().put(Entity.json(poster));
+			status = response.getStatus();
+			response.close();
+			
+			if (status != 204) {
+				logger.error("Failed to update movie poster with json. Returned with response code: " + status);
 			}
 			
 		} finally {

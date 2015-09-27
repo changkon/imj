@@ -23,7 +23,8 @@ import changkon.imj.dto.Log;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
-import changkon.imj.jaxb.JAXBMarshalPrint;
+import changkon.imj.jackson.JsonPrint;
+import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
 
 public class LogTest {
@@ -44,9 +45,6 @@ public class LogTest {
 			viewer.setLastName("Han");
 			viewer.setGender(Gender.MALE);
 			
-			logger.info("Printing viewer");
-			JAXBMarshalPrint.marshalPrint(viewer, Viewer.class, logger);
-			
 			Movie movie = new Movie();
 			movie.setTitle("Maze Runner");
 			movie.setDirector("Wes Ball");
@@ -55,9 +53,6 @@ public class LogTest {
 			movie.setRuntime(113);
 			movie.setGenre(Genre.ACTION);
 			movie.setRelease(new DateTime(2014, 10, 10, 0, 0));
-			
-			logger.info("Printing movie");
-			JAXBMarshalPrint.marshalPrint(movie, Movie.class, logger);
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
 			Response response = target.request().post(Entity.xml(viewer));
@@ -82,12 +77,21 @@ public class LogTest {
 			log.setMovie(movie);
 			log.setViewer(viewer);
 			
-			JAXBMarshalPrint.marshalPrint(log, Log.class, logger);
-			
 			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/log").resolveTemplate("id", id);
 			response = target.request().post(Entity.xml(log));
 			
 			int status = response.getStatus();
+
+			if (status != 200) {
+				logger.error("Error creating log entry. Web Service responded with status: " + status);
+				fail();
+			}
+			
+			response.close();
+			
+			response = target.request().post(Entity.json(log));
+			
+			status = response.getStatus();
 
 			if (status != 200) {
 				logger.error("Error creating log entry. Web Service responded with status: " + status);
@@ -180,9 +184,6 @@ public class LogTest {
 				logger.error("Failed to query viewer logs");
 				fail();
 			}
-			
-			logger.info("Printing queried user log");
-			JAXBMarshalPrint.marshalPrint(viewerLogs, ViewerLogs.class, logger);
 			
 		} finally {
 			client.close();

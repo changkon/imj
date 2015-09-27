@@ -21,7 +21,7 @@ import changkon.imj.domain.Genre;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerRecommendedMovies;
-import changkon.imj.jaxb.JAXBMarshalPrint;
+import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
 
 public class RecommendedMovieTest {
@@ -92,7 +92,7 @@ public class RecommendedMovieTest {
 			}
 
 			logger.info("Printing movie recommendations");
-			JAXBMarshalPrint.marshalPrint(recommendedMovies, ViewerRecommendedMovies.class, logger);
+			JAXB.prettyPrint(recommendedMovies, ViewerRecommendedMovies.class, logger);
 
 		} finally {
 			client.close();
@@ -166,7 +166,7 @@ public class RecommendedMovieTest {
 			}
 			
 			logger.info("Printing queried recommended movies");
-			JAXBMarshalPrint.marshalPrint(queryRecommendedMovies, ViewerRecommendedMovies.class, logger);
+			JAXB.prettyPrint(queryRecommendedMovies, ViewerRecommendedMovies.class, logger);
 			
 		} finally {
 			client.close();
