@@ -1,4 +1,4 @@
-package changkon.imj.dto;
+package changkon.imj.mapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

@@ -6,8 +6,6 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-import changkon.imj.converters.MovieConverter;
-
 /**
  * Main application class responsible for running Internet Movie Journal
  * @author Chang Kon Han
@@ -24,7 +22,6 @@ public class IMJApplication extends Application {
 	public IMJApplication() {
 		singletons.add(new ViewerResource());
 		singletons.add(new MovieResource());
-		components.add(MovieConverter.class);
 	}
 
 	@Override

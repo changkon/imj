@@ -13,14 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import changkon.imj.dto.Log;
-import changkon.imj.dto.LogMapper;
 import changkon.imj.dto.Movie;
-import changkon.imj.dto.MovieMapper;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
-import changkon.imj.dto.ViewerMapper;
 import changkon.imj.dto.ViewerRecommendedMovies;
 import changkon.imj.jaxb.JAXBMarshalPrint;
+import changkon.imj.mapper.LogMapper;
+import changkon.imj.mapper.MovieMapper;
+import changkon.imj.mapper.ViewerMapper;
 
 public class ViewerResource implements IViewerResource {
 

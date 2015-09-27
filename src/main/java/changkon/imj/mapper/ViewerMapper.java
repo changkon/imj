@@ -1,4 +1,4 @@
-package changkon.imj.dto;
+package changkon.imj.mapper;
 
 import changkon.imj.domain.Viewer;
 

@@ -1,6 +1,8 @@
-package changkon.imj.dto;
+package changkon.imj.mapper;
 
 import org.joda.time.DateTime;
+
+import changkon.imj.dto.Log;
 
 public class LogMapper {
 

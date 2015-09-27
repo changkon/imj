@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.MovieCast;
 import changkon.imj.dto.MovieDescription;
-import changkon.imj.dto.MovieMapper;
 import changkon.imj.dto.MoviePoster;
 import changkon.imj.dto.MovieReleaseDates;
 import changkon.imj.dto.Movies;
+import changkon.imj.mapper.MovieMapper;
 
 public class MovieResource implements IMovieResource {
 
