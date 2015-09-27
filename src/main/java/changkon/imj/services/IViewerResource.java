@@ -49,12 +49,12 @@ public interface IViewerResource {
 	
 	@PUT
 	@Consumes("application/xml")
-	@PathParam("{id:\\d+}/recommended")
+	@Path("{id:\\d+}/recommended")
 	public void updateRecommended(@PathParam("id") long viewerId, ViewerRecommendedMovies recommendedMovies);
 	
 	@GET
 	@Produces("application/xml")
-	@PathParam("{id:\\d+}/recommended")
+	@Path("{id:\\d+}/recommended")
 	public ViewerRecommendedMovies queryRecommended(@PathParam("id") long viewerId);
 	
 }
