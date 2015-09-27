@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
 
 import changkon.imj.domain.GeoLocation;
@@ -18,6 +19,7 @@ public class Log {
 	@XmlAttribute(name="id")
 	private Long id;
 	
+	@JsonIgnore
 	@XmlTransient
 	private Viewer viewer;
 	

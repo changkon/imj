@@ -100,6 +100,9 @@ public class LogTest {
 			
 			response.close();
 			
+			JAXB.prettyPrint(log, Log.class, logger);
+			JsonPrint.prettyPrint(log, logger);
+			
 		} finally {
 			client.close();
 		}
