@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;

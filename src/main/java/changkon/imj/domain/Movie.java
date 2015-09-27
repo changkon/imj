@@ -61,7 +61,7 @@ public class Movie {
 	@CollectionTable(name="RELEASES")
 	@MapKeyColumn(name="COUNTRY")
 	@Column(name="DATE")
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Map<String, Date> releases = new HashMap<String, Date>();
 	
 	@Column(name="COUNTRY")

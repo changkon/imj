@@ -8,6 +8,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 
 import changkon.imj.dto.Log;
@@ -57,4 +59,8 @@ public interface IViewerResource {
 	@Path("{id:\\d+}/recommended")
 	public ViewerRecommendedMovies queryRecommended(@PathParam("id") long viewerId);
 	
+	@GET
+	@Produces("text/plain")
+	@Path("{viewerId:\\d+}/recommended/{movieId:\\d+}")
+	public void movieNotification(@PathParam("viewerId") final long viewerId, @PathParam("movieId") final long movieId, final @Suspended AsyncResponse response);
 }
