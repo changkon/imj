@@ -1,6 +1,9 @@
 package changkon.imj.viewer.test;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Set;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -19,6 +22,7 @@ import changkon.imj.domain.GeoLocation;
 import changkon.imj.dto.Log;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.Viewer;
+import changkon.imj.dto.ViewerLogs;
 import changkon.imj.jaxb.JAXBMarshalPrint;
 import changkon.imj.services.IMJApplication;
 
@@ -97,5 +101,91 @@ public class LogTest {
 		}
 		
 	}
-	
+
+	@Test
+	public void testLogQuery() {
+		logger.info("Testing log query for specific user");
+		
+		Client client = ClientBuilder.newClient();
+		
+		try {
+			Viewer viewer = new Viewer();
+			viewer.setAge(30);
+			viewer.setCountry("USA");
+			viewer.setFirstName("Alex");
+			viewer.setLastName("Hamilton");
+			viewer.setGender(Gender.MALE);
+			
+			// Add viewer to database
+			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
+			Response response = target.request().post(Entity.xml(viewer));
+			
+			String location = response.getLocation().toString();
+			
+			logger.info("URI for new viewer is: " + location);
+			
+			response.close();
+			
+			String[] split = location.split("/");
+			
+			long id = Long.parseLong(split[split.length-1]);
+			
+			// Create some movies for log entries
+			Movie movie1 = new Movie();
+			movie1.setTitle("The Hunger Games");
+			movie1.setDirector("Gary Ross");
+			movie1.setLanguage("English");
+			movie1.setRuntime(142);
+			movie1.setRelease(new DateTime(2012, 3, 23, 0, 0));
+			movie1.setGenre(Genre.ADVENTURE);
+			movie1.setCountry("USA");
+			
+			Movie movie2 = new Movie();
+			movie2.setTitle("The Hunger Games: Catching Fire");
+			movie2.setDirector("Francis Lawrence");
+			movie2.setLanguage("English");
+			movie2.setRuntime(146);
+			movie2.setRelease(new DateTime(2013, 11, 21, 0, 0));
+			movie2.setGenre(Genre.ADVENTURE);
+			movie2.setCountry("USA");
+			
+			// Create logs for viewer
+			Log log1 = new Log();
+			log1.setDate(new DateTime(2015, 9, 25, 0, 0));
+			log1.setViewer(viewer);
+			log1.setMovie(movie1);
+			log1.setGeoLocation(new GeoLocation(-36.852049, 174.767817));
+			
+			Log log2 = new Log();
+			log2.setDate(new DateTime(2015, 9, 26, 0, 0));
+			log2.setViewer(viewer);
+			log2.setMovie(movie2);
+			log2.setGeoLocation(new GeoLocation(-36.852049, 174.767817));
+			
+			// Add to database
+			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/log").resolveTemplate("id", id);
+			response = target.request().post(Entity.xml(log1));
+			
+			response.close();
+			
+			response = target.request().post(Entity.xml(log2));
+			response.close();
+			
+			logger.info("Querying logs for user");
+			// Query logs for user
+			ViewerLogs viewerLogs = target.request().get(ViewerLogs.class);
+			response.close();
+			
+			if (viewerLogs == null) {
+				logger.error("Failed to query viewer logs");
+				fail();
+			}
+			
+			logger.info("Printing queried user log");
+			JAXBMarshalPrint.marshalPrint(viewerLogs, ViewerLogs.class, logger);
+			
+		} finally {
+			client.close();
+		}
+	}
 }

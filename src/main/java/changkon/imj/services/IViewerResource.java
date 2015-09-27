@@ -44,7 +44,7 @@ public interface IViewerResource {
 	
 	@GET
 	@Produces("application/xml")
-	@PathParam("{id:\\d+}/log")
+	@Path("{id:\\d+}/log")
 	public ViewerLogs queryLogs(@PathParam("id") long viewerId);
 	
 	@PUT
