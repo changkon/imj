@@ -134,7 +134,8 @@ public class ViewerResource implements IViewerResource {
 	@Override
 	public Viewer queryViewer(long id) {
 		Viewer dtoViewer = new Viewer();
-
+		boolean errorThrown = false;
+		
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 
 		try {
@@ -149,17 +150,17 @@ public class ViewerResource implements IViewerResource {
 
 		} catch (Exception e) {
 			logger.error("Failed to query viewer information");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 
-		return dtoViewer;
+		return (errorThrown == true) ? null : dtoViewer;
 	}
 
-	@Override
-	public Log createLog(long viewerId, Log log) {
+	public Response createLog(long viewerId, Log log) {
 		boolean errorThrown = false;
 
 		Log copy = new Log();
@@ -201,13 +202,14 @@ public class ViewerResource implements IViewerResource {
 			}
 		}
 
-		return (errorThrown == true) ? null : copy;
+		return (errorThrown == true) ? null : Response.created(URI.create("/viewer/" + log.getViewer().getId() + "/log")).build();
 	}
 
 	@Override
 	public ViewerLogs queryLogs(long viewerId) {
 		ViewerLogs viewerLogs = new ViewerLogs();
-
+		boolean errorThrown = false;
+		
 		// put movie instance into database
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 
@@ -232,13 +234,14 @@ public class ViewerResource implements IViewerResource {
 
 		} catch (Exception e) {
 			logger.error("Error querying user movie logs");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 
-		return viewerLogs;
+		return (errorThrown == true) ? null : viewerLogs;
 	}
 
 	@Override
@@ -274,6 +277,9 @@ public class ViewerResource implements IViewerResource {
 
 	@Override
 	public ViewerRecommendedMovies queryRecommended(long viewerId) {
+		ViewerRecommendedMovies recommendedMovies = new ViewerRecommendedMovies();
+		boolean errorThrown = false;
+		
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 
 		try {
@@ -282,8 +288,6 @@ public class ViewerResource implements IViewerResource {
 			tx.begin();
 
 			changkon.imj.domain.Viewer domainViewer = em.find(changkon.imj.domain.Viewer.class, viewerId);
-
-			ViewerRecommendedMovies recommendedMovies = new ViewerRecommendedMovies();
 
 			Set<changkon.imj.domain.Movie> domainMovieSet = domainViewer.getRecommendedMovies();
 
@@ -294,17 +298,16 @@ public class ViewerResource implements IViewerResource {
 
 			recommendedMovies.setRecommendedMovies(movieSet);
 
-			return recommendedMovies;
-
 		} catch (Exception e) {
 			logger.error("Failed to query viewers recommended movies");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 
-		return null;
+		return (errorThrown == true) ? null : recommendedMovies;
 	}
 
 	public void movieNotification(final long viewerId, final long movieId, @Suspended final AsyncResponse response) {
@@ -394,9 +397,9 @@ public class ViewerResource implements IViewerResource {
 	@Override
 	public Viewers queryViewerList() {
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
-		
+		Viewers viewers = new Viewers();
+		boolean errorThrown = false;
 		try {
-			Viewers viewers = new Viewers();
 			
 			List<Viewer> viewerList = new ArrayList<Viewer>();
 			
@@ -416,24 +419,24 @@ public class ViewerResource implements IViewerResource {
 			
 			viewers.setViewers(viewerList);
 			
-			return viewers;
 		} catch (Exception e) {
 			logger.error("Querying viewer list resulted in error");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return null;
+		return (errorThrown == true) ? null : viewers;
 	}
 
 	@Override
 	public Viewers queryViewerList(int start, int size) {
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
-		
+		Viewers viewers = new Viewers();
+		boolean errorThrown = false;
 		try {
-			Viewers viewers = new Viewers();
 			
 			List<Viewer> viewerList = new ArrayList<Viewer>();
 			
@@ -462,12 +465,13 @@ public class ViewerResource implements IViewerResource {
 			return viewers;
 		} catch (Exception e) {
 			logger.error("Querying viewer list resulted in error");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return null;
+		return (errorThrown == true) ? null : viewers;
 	}
 }

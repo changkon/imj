@@ -82,7 +82,7 @@ public class LogTest {
 			
 			int status = response.getStatus();
 
-			if (status != 200) {
+			if (status != 201) {
 				logger.error("Error creating log entry. Web Service responded with status: " + status);
 				fail();
 			}
@@ -93,15 +93,12 @@ public class LogTest {
 			
 			status = response.getStatus();
 
-			if (status != 200) {
+			if (status != 201) {
 				logger.error("Error creating log entry. Web Service responded with status: " + status);
 				fail();
 			}
 			
 			response.close();
-			
-			JAXB.prettyPrint(log, Log.class, logger);
-			JsonPrint.prettyPrint(log, logger);
 			
 		} finally {
 			client.close();

@@ -51,9 +51,8 @@ public interface IViewerResource {
 	
 	@POST
 	@Consumes({"application/xml", "application/json"})
-	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}/log")
-	public Log createLog(@PathParam("id") long id, Log log);
+	public Response createLog(@PathParam("id") long id, Log log);
 	
 	@GET
 	@Produces({"application/xml", "application/json"})

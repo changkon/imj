@@ -66,9 +66,10 @@ public class MovieResource implements IMovieResource {
 
 	public Movies queryMovieList() {
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
-		
+		Movies movies = new Movies();
+		boolean errorThrown = false;
 		try {
-			Movies movies = new Movies();
+			
 			
 			List<Movie> movieList = new ArrayList<Movie>();
 			
@@ -88,23 +89,23 @@ public class MovieResource implements IMovieResource {
 			
 			movies.setMovies(movieList);
 			
-			return movies;
 		} catch (Exception e) {
 			logger.error("Querying movie list resulted in error");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return null;
+		return (errorThrown == true) ? null : movies;
 	}
 
 	public Movies queryMovieList(int start, int size) {
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
-		
+		Movies movies = new Movies();
+		boolean errorThrown = false;
 		try {
-			Movies movies = new Movies();
 			
 			List<Movie> movieList = new ArrayList<Movie>();
 			
@@ -130,16 +131,16 @@ public class MovieResource implements IMovieResource {
 			
 			movies.setMovies(movieList);
 			
-			return movies;
 		} catch (Exception e) {
 			logger.error("Querying movie list resulted in error");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return null;
+		return (errorThrown == true) ? null : movies;
 	}
 	
 	public Movie queryMovie(long id) {
@@ -164,7 +165,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return dtoMovie;
+		return null;
 	}
 
 	public void updateMovie(long id, Movie movie) {
@@ -204,6 +205,7 @@ public class MovieResource implements IMovieResource {
 
 	public MovieCast queryCast(long id) {
 		MovieCast movieCast = new MovieCast();
+		boolean errorThrown = false;
 		
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
@@ -218,13 +220,14 @@ public class MovieResource implements IMovieResource {
 			tx.commit();
 		} catch (Exception e) {
 			logger.error("Error retrieving movie cast");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return movieCast;
+		return (errorThrown == true) ? null : movieCast;
 	}
 	
 	public void updateCast(long id, MovieCast cast) {
@@ -252,6 +255,7 @@ public class MovieResource implements IMovieResource {
 
 	public MovieDescription queryDescription(long id) {
 		MovieDescription description = new MovieDescription();
+		boolean errorThrown = false;
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
 		try {
@@ -266,13 +270,14 @@ public class MovieResource implements IMovieResource {
 			
 		} catch (Exception e) {
 			logger.error("Error querying movie description");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return description;
+		return (errorThrown == true) ? null : description;
 	}
 	
 	public void updateDescription(long id, MovieDescription description) {
@@ -298,6 +303,7 @@ public class MovieResource implements IMovieResource {
 
 	public MovieReleaseDates queryReleaseDates(long id) {
 		MovieReleaseDates releaseDates = new MovieReleaseDates();
+		boolean errorThrown = false;
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
 		try {
@@ -313,13 +319,14 @@ public class MovieResource implements IMovieResource {
 			
 		} catch (Exception e) {
 			logger.error("Error querying release dates");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return releaseDates;
+		return (errorThrown == true) ? null : releaseDates;
 	}
 
 	public void updateReleaseDates(long id, MovieReleaseDates movieReleaseDates) {
@@ -347,6 +354,7 @@ public class MovieResource implements IMovieResource {
 
 	public MoviePoster queryPoster(long id) {
 		MoviePoster poster = new MoviePoster();
+		boolean errorThrown = false;
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
 		try {
@@ -361,13 +369,14 @@ public class MovieResource implements IMovieResource {
 			
 		} catch (Exception e) {
 			logger.error("Error querying movie poster");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return poster;
+		return (errorThrown == true) ? null : poster;
 	}
 
 	public void updatePoster(long id, MoviePoster poster) {

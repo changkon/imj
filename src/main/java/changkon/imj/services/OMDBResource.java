@@ -1,6 +1,5 @@
 package changkon.imj.services;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.persistence.EntityManager;
@@ -8,8 +7,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
