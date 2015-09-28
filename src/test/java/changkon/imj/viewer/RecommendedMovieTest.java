@@ -27,22 +27,6 @@ import changkon.imj.services.IMJApplication;
 public class RecommendedMovieTest {
 
 	private Logger logger = LoggerFactory.getLogger(RecommendedMovieTest.class);
-
-	@Test
-	public void testFavouriteGenre() {
-		logger.info("Testing favourite genre query");
-		
-		Client client = ClientBuilder.newClient();
-		
-		try {
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/favgenre").resolveTemplate("id", new Long(26));
-			Response response = target.request().get();
-			
-		} finally {
-			client.close();
-		}
-	}
 	
 	@Test
 	public void testUpdateRecommended() {
