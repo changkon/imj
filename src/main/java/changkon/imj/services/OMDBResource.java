@@ -36,48 +36,43 @@ public class OMDBResource implements IOMDBResource {
 
 				@Override
 				public void run() {
-					EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
-					
-					final Client client = ClientBuilder.newClient();
-					final String movieTitle;
-					
 					try {
-						EntityTransaction tx = em.getTransaction();
+						EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+						
+						final Client client = ClientBuilder.newClient();
+						final String movieTitle;
+						
+						try {
+							EntityTransaction tx = em.getTransaction();
 
-						tx.begin();
-						
-						Movie domainMovie = em.find(Movie.class, id);
-						movieTitle = domainMovie.getTitle();
-						
-						tx.commit();
-					} finally {
-						if (em.isOpen() || em != null) {
-							em.close();
+							tx.begin();
+							
+							Movie domainMovie = em.find(Movie.class, id);
+							movieTitle = domainMovie.getTitle();
+							
+							tx.commit();
+						} finally {
+							if (em.isOpen() || em != null) {
+								em.close();
+							}
 						}
-					}
-					
-					final String json;
-					System.out.println("called");
-					// Set up connection to OMDB api
-					String url = getURL(movieTitle);
-					System.out.println(url);
-					WebTarget target = client.target(url);
-					Future<Response> future = target.request().accept(MediaType.APPLICATION_JSON).async().get();
+						
+						final String json;
 
-					try {
+						// Set up connection to OMDB api
+						String url = getURL(movieTitle);
+
+						WebTarget target = client.target(url);
+						Future<Response> future = target.request().accept(MediaType.APPLICATION_JSON).async().get();
 						
 						json = future.get().readEntity(String.class);
-						System.out.println("Json: ");
-						System.out.println(json);
+
 						client.close();
 						response.resume(json);
 						
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						e.printStackTrace();
+					} catch (Exception e) {
+						
 					}
-					
 				}
 				
 			}

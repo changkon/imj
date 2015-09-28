@@ -9,6 +9,7 @@ import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import changkon.imj.domain.Genre;
 import changkon.imj.dto.Movie;
+import changkon.imj.jackson.JsonPrint;
 import changkon.imj.services.IMJApplication;
 
 public class OMDBTest {
@@ -41,13 +43,28 @@ public class OMDBTest {
 			
 			Response response = target.request().post(Entity.json(movie));
 			
+			String location = response.getLocation().toString();
+			
+			String[] split = location.split("/");
+			
+			long id = Long.parseLong(split[split.length-1]);
 			response.close();
+			
+			target = client.target(IMJApplication.BASEURI + "/omdb/{id:\\d+}").resolveTemplate("id", id);
 			
 			Future<String> future = target.request().async().get(new InvocationCallback<String>() {
 				
 				public void completed(String message) {
-					logger.info("Received callback message for OMDB api connection");
-					logger.info(message);
+					try {
+						logger.info("Received callback message for OMDB api connection");
+						ObjectMapper mapper = new ObjectMapper();
+						Object json = mapper.readValue(message, Object.class);
+						String indented = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+						logger.info(indented);
+						
+					} catch (Exception e) {
+						
+					}
 				}
 				
 				public void failed(Throwable t) {

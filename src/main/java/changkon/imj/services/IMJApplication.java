@@ -22,6 +22,7 @@ public class IMJApplication extends Application {
 	public IMJApplication() {
 		singletons.add(new ViewerResource());
 		singletons.add(new MovieResource());
+		singletons.add(new OMDBResource());
 	}
 
 	@Override
