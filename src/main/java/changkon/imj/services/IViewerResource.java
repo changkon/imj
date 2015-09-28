@@ -12,6 +12,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 
+import changkon.imj.domain.Genre;
 import changkon.imj.dto.Log;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
@@ -63,4 +64,10 @@ public interface IViewerResource {
 	@Produces("text/plain")
 	@Path("{viewerId:\\d+}/recommended/{movieId:\\d+}")
 	public void movieNotification(@PathParam("viewerId") final long viewerId, @PathParam("movieId") final long movieId, final @Suspended AsyncResponse response);
+	
+	@GET
+	@Produces({"application/xml", "application/json"})
+	@Path("{id:\\d+}/favgenre")
+	public Genre queryFavouriteGenre(@PathParam("id") long viewerId);
+
 }

@@ -12,6 +12,9 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
@@ -21,6 +24,7 @@ import org.joda.time.Seconds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import changkon.imj.domain.Genre;
 import changkon.imj.dto.Log;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.Viewer;
@@ -381,5 +385,44 @@ public class ViewerResource implements IViewerResource {
 				}
 			}
 		).start();
+	}
+
+	@Override
+	public Genre queryFavouriteGenre(long viewerId) {
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+
+			EntityTransaction tx = em.getTransaction();
+			
+			tx.begin();
+
+			String sql = "SELECT m.genre "
+					+ "FROM Log l, Movie m "
+					+ "WHERE l.viewer=" + viewerId + " "
+					+ "AND l.movie=m.id "
+					+ "GROUP BY m.genre "
+					+ "ORDER BY Count(m.genre) DESC";
+			
+			Query query = em.createQuery(sql);
+			query.setFirstResult(0);
+			query.setMaxResults(1);
+			Object g = query.getSingleResult();
+			Genre genre = (Genre)g;
+			
+			tx.commit();
+			
+			return genre;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Failed to query favourite genre");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
+		
+		return null;
 	}
 }
