@@ -12,6 +12,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -22,16 +23,47 @@ import changkon.imj.domain.Genre;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerRecommendedMovies;
-import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
 
 public class RecommendedMovieTest {
 
 	private Logger logger = LoggerFactory.getLogger(RecommendedMovieTest.class);
 	
+	private long viewerId;
+	
 	@Before
 	public void setUp() {
+		Client client = ClientBuilder.newClient();
 		
+		// Create viewer
+		Viewer viewer = new Viewer();
+		viewer.setAge(15);
+		viewer.setCountry("New Zealand");
+		viewer.setFirstName("Sam");
+		viewer.setLastName("Wells");
+		viewer.setGender(Gender.MALE);
+		
+		// Add to database
+		WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
+		Response response = target.request().post(Entity.xml(viewer));
+
+		String location = response.getLocation().toString();
+
+		logger.info("URI for new viewer is: " + location);
+
+		String[] split = location.split("/");
+
+		viewerId = Long.parseLong(split[split.length-1]);
+		
+		response.close();
+	}
+	
+	@After
+	public void tearDown() {
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", viewerId);
+		Response response = target.request().delete();
+		response.close();
 	}
 	
 	@Test
@@ -41,28 +73,6 @@ public class RecommendedMovieTest {
 		Client client = ClientBuilder.newClient();
 
 		try {
-			// Create viewer
-			Viewer viewer = new Viewer();
-			viewer.setAge(15);
-			viewer.setCountry("New Zealand");
-			viewer.setFirstName("Sam");
-			viewer.setLastName("Wells");
-			viewer.setGender(Gender.MALE);
-
-			// Add to database
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
-			Response response = target.request().post(Entity.xml(viewer));
-
-			String location = response.getLocation().toString();
-
-			response.close();
-
-			logger.info("URI for new viewer is: " + location);
-
-			String[] split = location.split("/");
-
-			long id = Long.parseLong(split[split.length-1]);
-
 			Movie movie1 = new Movie();
 			movie1.setTitle("Spirited Away");
 			movie1.setDirector("Hayao Miyazaki");
@@ -87,8 +97,8 @@ public class RecommendedMovieTest {
 			recommendedMoviesSet.add(movie2);
 			recommendedMovies.setRecommendedMovies(recommendedMoviesSet);
 
-			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/recommended").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(recommendedMovies));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/recommended").resolveTemplate("id", viewerId);
+			Response response = target.request().put(Entity.xml(recommendedMovies));
 
 			int status = response.getStatus();
 
@@ -109,28 +119,6 @@ public class RecommendedMovieTest {
 		Client client = ClientBuilder.newClient();
 
 		try {
-			// Create viewer
-			Viewer viewer = new Viewer();
-			viewer.setAge(10);
-			viewer.setCountry("New Zealand");
-			viewer.setFirstName("Alice");
-			viewer.setLastName("Miles");
-			viewer.setGender(Gender.FEMALE);
-
-			// Add to database
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
-			Response response = target.request().post(Entity.xml(viewer));
-
-			String location = response.getLocation().toString();
-
-			response.close();
-
-			logger.info("URI for new viewer is: " + location);
-
-			String[] split = location.split("/");
-
-			long id = Long.parseLong(split[split.length-1]);
-
 			Movie movie1 = new Movie();
 			movie1.setTitle("Toy Story");
 			movie1.setDirector("John Lasseter");
@@ -155,18 +143,20 @@ public class RecommendedMovieTest {
 			recommendedMoviesSet.add(movie2);
 			recommendedMovies.setRecommendedMovies(recommendedMoviesSet);
 
-			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/recommended").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(recommendedMovies));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/recommended").resolveTemplate("id", viewerId);
+			Response response = target.request().put(Entity.xml(recommendedMovies));
 			
 			response.close();
 			
-			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/recommended").resolveTemplate("id", id);
+			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/recommended").resolveTemplate("id", viewerId);
 			ViewerRecommendedMovies queryRecommendedMovies = target.request().get(ViewerRecommendedMovies.class);
 			
 			if (queryRecommendedMovies == null) {
 				logger.error("Failed to query recommended movies");
 				fail();
 			}
+			
+			response.close();
 			
 		} finally {
 			client.close();
