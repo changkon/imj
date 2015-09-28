@@ -12,6 +12,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,11 @@ import changkon.imj.services.IMJApplication;
 public class RecommendedMovieTest {
 
 	private Logger logger = LoggerFactory.getLogger(RecommendedMovieTest.class);
+	
+	@Before
+	public void setUp() {
+		
+	}
 	
 	@Test
 	public void testUpdateRecommended() {

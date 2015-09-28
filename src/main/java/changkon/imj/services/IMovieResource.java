@@ -1,6 +1,7 @@
 package changkon.imj.services;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,6 +31,10 @@ public interface IMovieResource {
 	@POST
 	@Consumes({"application/xml", "application/json"})
 	public Response createMovie(Movie movie);
+	
+	@DELETE
+	@Path("{id:\\d+}")
+	public void deleteMovie(@PathParam("id") long id);
 	
 	/**
 	 * Queries database for all movies in database

@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
@@ -67,6 +68,33 @@ public class MovieResource implements IMovieResource {
 		return (errorThrown == true) ? Response.status(Response.Status.INTERNAL_SERVER_ERROR).build() : Response.created(URI.create("/movie/" + movie.getId())).build();
 	}
 
+	public void deleteMovie(long id) {
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+
+		try {
+
+			EntityTransaction tx = em.getTransaction();
+
+			tx.begin();
+
+			// First find movie resource to delete
+			changkon.imj.domain.Movie movie = em.find(changkon.imj.domain.Movie.class, id);
+
+			// Delete movie from database
+			em.remove(movie);
+
+			// Commit transaction
+			tx.commit();
+
+		} catch (Exception e) {
+			logger.error("Failed to delete movie");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
+	}
+	
 	public Movies queryMovieList() {
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		Movies movies = new Movies();
