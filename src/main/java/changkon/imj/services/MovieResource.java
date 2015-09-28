@@ -39,6 +39,8 @@ public class MovieResource implements IMovieResource {
 		// Change dto movie instance into domain model which will be persisted into database
 		changkon.imj.domain.Movie movie = MovieMapper.toDomainModel(dtoMovie);
 		
+		boolean errorThrown = false;
+		
 		// put movie instance into database
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
@@ -55,13 +57,14 @@ public class MovieResource implements IMovieResource {
 			
 		} catch (Exception e) {
 			logger.error("Error occurred in creating Movie");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 		
-		return Response.created(URI.create("/movie/" + movie.getId())).build();
+		return (errorThrown == true) ? Response.status(Response.Status.INTERNAL_SERVER_ERROR).build() : Response.created(URI.create("/movie/" + movie.getId())).build();
 	}
 
 	public Movies queryMovieList() {
@@ -165,7 +168,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return null;
+		return dtoMovie;
 	}
 
 	public void updateMovie(long id, Movie movie) {

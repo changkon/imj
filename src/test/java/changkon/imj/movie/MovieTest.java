@@ -158,9 +158,6 @@ public class MovieTest {
 			
 			logger.info("Queried movie is equal to movie created earlier");
 			
-			logger.info("Printing queried movie");
-			JAXB.prettyPrint(queryMovie, Movie.class, logger);
-			
 		} finally {
 			client.close();
 		}
@@ -182,9 +179,6 @@ public class MovieTest {
 			movie.setRuntime(60);
 			movie.setGenre(Genre.ACTION);
 			movie.setRelease(new DateTime(1941, 9, 5, 0, 0));
-			
-			logger.info("Print incorrect movie");
-			JAXB.prettyPrint(movie, Movie.class, logger);
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			Response response = target.request().post(Entity.xml(movie));
@@ -221,9 +215,6 @@ public class MovieTest {
 			
 			logger.info("Movie has been updated successfully");
 			
-			logger.info("Printing updated movie");
-			JAXB.prettyPrint(queryMovie, Movie.class, logger);
-			
 		} finally {
 			client.close();
 		}
@@ -245,9 +236,6 @@ public class MovieTest {
 			movie.setLanguage("English");
 			movie.setRelease(new DateTime(2014, 10, 17, 0, 0));
 			movie.setRuntime(119);
-			
-			logger.info("Printing created movie");
-			JAXB.prettyPrint(movie, Movie.class, logger);
 			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			Response response = target.request().post(Entity.xml(movie));
@@ -316,9 +304,6 @@ public class MovieTest {
 			movie.setRelease(new DateTime(2014, 11, 7, 0, 0));
 			movie.setRuntime(169);
 			
-			logger.info("Printing created movie");
-			JAXB.prettyPrint(movie, Movie.class, logger);
-			
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			Response response = target.request().post(Entity.xml(movie));
 			String location = response.getLocation().toString();
@@ -361,9 +346,6 @@ public class MovieTest {
 			assertTrue(retrieveMovieCastCollection.contains("Matt Damon"));
 			assertTrue(retrieveMovieCastCollection.contains("Jessica Chastain"));
 			assertTrue(retrieveMovieCastCollection.contains("Michael Caine"));
-			
-			logger.info("Printing movie cast");
-			JAXB.prettyPrint(retrieveMovieCast, MovieCast.class, logger);
 			
 		} finally {
 			client.close();
@@ -419,9 +401,6 @@ public class MovieTest {
 			assertEquals(movieDescription, queryDescription.getDescription());
 			
 			logger.info("Retrieved movie description matches");
-			logger.info("Printing movie description for movie id: " + id);
-			
-			JAXB.prettyPrint(queryDescription, MovieDescription.class, logger);
 			
 		} finally {
 			client.close();
@@ -485,8 +464,6 @@ public class MovieTest {
 				logger.error("Failed to update movie description with json. Returned with response code: " + status);
 				fail();
 			}
-			
-			JsonPrint.prettyPrint(description, logger);
 			
 		} finally {
 			client.close();
@@ -671,9 +648,6 @@ public class MovieTest {
 			assertEquals(url, queryMoviePoster.getUrl());
 			
 			logger.info("Retrieved movie poster matches");
-			logger.info("Printing movie release dates for movie id: " + id);
-			
-			JAXB.prettyPrint(queryMoviePoster, MoviePoster.class, logger);
 			
 		} finally {
 			client.close();

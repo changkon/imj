@@ -57,10 +57,10 @@ public class OMDBTest {
 				public void completed(String message) {
 					try {
 						logger.info("Received callback message for OMDB api connection");
-						ObjectMapper mapper = new ObjectMapper();
-						Object json = mapper.readValue(message, Object.class);
-						String indented = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-						logger.info(indented);
+//						ObjectMapper mapper = new ObjectMapper();
+//						Object json = mapper.readValue(message, Object.class);
+//						String indented = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+//						logger.info(indented);
 						
 					} catch (Exception e) {
 						

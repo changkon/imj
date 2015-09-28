@@ -91,9 +91,6 @@ public class RecommendedMovieTest {
 				fail();
 			}
 
-			logger.info("Printing movie recommendations");
-			JAXB.prettyPrint(recommendedMovies, ViewerRecommendedMovies.class, logger);
-
 		} finally {
 			client.close();
 		}
@@ -164,9 +161,6 @@ public class RecommendedMovieTest {
 				logger.error("Failed to query recommended movies");
 				fail();
 			}
-			
-			logger.info("Printing queried recommended movies");
-			JAXB.prettyPrint(queryRecommendedMovies, ViewerRecommendedMovies.class, logger);
 			
 		} finally {
 			client.close();

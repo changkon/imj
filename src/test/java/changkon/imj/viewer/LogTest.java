@@ -83,7 +83,7 @@ public class LogTest {
 			int status = response.getStatus();
 
 			if (status != 201) {
-				logger.error("Error creating log entry. Web Service responded with status: " + status);
+				logger.error("Error creating log entry with xml. Web Service responded with status: " + status);
 				fail();
 			}
 			
@@ -94,7 +94,7 @@ public class LogTest {
 			status = response.getStatus();
 
 			if (status != 201) {
-				logger.error("Error creating log entry. Web Service responded with status: " + status);
+				logger.error("Error creating log entry with json. Web Service responded with status: " + status);
 				fail();
 			}
 			

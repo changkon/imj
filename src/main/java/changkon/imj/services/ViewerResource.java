@@ -15,8 +15,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
@@ -26,14 +24,13 @@ import org.joda.time.Seconds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import changkon.imj.domain.Genre;
 import changkon.imj.dto.Log;
 import changkon.imj.dto.Movie;
-import changkon.imj.dto.Movies;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
 import changkon.imj.dto.ViewerRecommendedMovies;
 import changkon.imj.dto.Viewers;
+import changkon.imj.jackson.JsonPrint;
 import changkon.imj.mapper.LogMapper;
 import changkon.imj.mapper.MovieMapper;
 import changkon.imj.mapper.ViewerMapper;
@@ -47,6 +44,8 @@ public class ViewerResource implements IViewerResource {
 		// Change dto viewer instance into domain model which will be persisted into database
 		changkon.imj.domain.Viewer viewer = ViewerMapper.toDomainModel(dtoViewer);
 
+		boolean errorThrown = false;
+		
 		// put movie instance into database
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 
@@ -63,13 +62,14 @@ public class ViewerResource implements IViewerResource {
 
 		} catch (Exception e) {
 			logger.error("Error occurred in creating viewer");
+			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 
-		return Response.created(URI.create("/viewer/" + viewer.getId())).build();
+		return (errorThrown == true) ? Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(): Response.created(URI.create("/viewer/" + viewer.getId())).build();
 	}
 
 	@Override
@@ -133,8 +133,7 @@ public class ViewerResource implements IViewerResource {
 
 	@Override
 	public Viewer queryViewer(long id) {
-		Viewer dtoViewer = new Viewer();
-		boolean errorThrown = false;
+		Viewer dtoViewer = null;
 		
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 
@@ -150,14 +149,13 @@ public class ViewerResource implements IViewerResource {
 
 		} catch (Exception e) {
 			logger.error("Failed to query viewer information");
-			errorThrown = true;
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
 		}
 
-		return (errorThrown == true) ? null : dtoViewer;
+		return dtoViewer;
 	}
 
 	public Response createLog(long viewerId, Log log) {
@@ -200,9 +198,9 @@ public class ViewerResource implements IViewerResource {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
-		}
-
-		return (errorThrown == true) ? null : Response.created(URI.create("/viewer/" + log.getViewer().getId() + "/log")).build();
+		}		
+		
+		return (errorThrown == true) ? Response.status(Response.Status.INTERNAL_SERVER_ERROR).build() : Response.created(URI.create("/viewer/" + viewerId + "/log")).build();
 	}
 
 	@Override
@@ -462,7 +460,6 @@ public class ViewerResource implements IViewerResource {
 			
 			viewers.setViewers(viewerList);
 			
-			return viewers;
 		} catch (Exception e) {
 			logger.error("Querying viewer list resulted in error");
 			errorThrown = true;
