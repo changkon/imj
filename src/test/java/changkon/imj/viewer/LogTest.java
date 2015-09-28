@@ -1,4 +1,4 @@
-package changkon.imj.viewer.test;
+package changkon.imj.viewer;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

@@ -1,4 +1,4 @@
-package changkon.imj.viewer.test;
+package changkon.imj.viewer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -286,7 +286,10 @@ public class ViewerTest {
 //					logger.info(message);
 //				}
 //
-//				public void failed(Throwable t) {}
+//				public void failed(Throwable t) {
+//					t.printStackTrace();
+//					System.out.println("error");
+//				}
 //
 //			});
 

@@ -1,4 +1,4 @@
-package changkon.imj.movie.test;
+package changkon.imj.movie;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
