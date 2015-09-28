@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
 
@@ -24,7 +26,10 @@ import changkon.imj.dto.MovieDescription;
 import changkon.imj.dto.MoviePoster;
 import changkon.imj.dto.MovieReleaseDates;
 import changkon.imj.dto.Movies;
+import changkon.imj.dto.Viewer;
+import changkon.imj.dto.Viewers;
 import changkon.imj.mapper.MovieMapper;
+import changkon.imj.mapper.ViewerMapper;
 
 public class MovieResource implements IMovieResource {
 
@@ -60,12 +65,13 @@ public class MovieResource implements IMovieResource {
 	}
 
 	public Movies queryMovieList() {
-		Movies movies = new Movies();
-		
-		List<Movie> movieList = new ArrayList<Movie>();
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
 		
 		try {
+			Movies movies = new Movies();
+			
+			List<Movie> movieList = new ArrayList<Movie>();
+			
 			EntityTransaction tx = em.getTransaction();
 			
 			tx.begin();
@@ -79,18 +85,63 @@ public class MovieResource implements IMovieResource {
 			}
 			
 			tx.commit();
+			
+			movies.setMovies(movieList);
+			
+			return movies;
 		} catch (Exception e) {
 			logger.error("Querying movie list resulted in error");
 		} finally {
 			if (em.isOpen() || em != null) {
 				em.close();
 			}
-			movies.setMovies(movieList);
 		}
 		
-		return movies;
+		return null;
 	}
 
+	public Movies queryMovieList(int start, int size) {
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			Movies movies = new Movies();
+			
+			List<Movie> movieList = new ArrayList<Movie>();
+			
+			EntityTransaction tx = em.getTransaction();
+			
+			tx.begin();
+			
+			// String query
+			String sql = "SELECT m "
+					+ "FROM Movie m "
+					+ "WHERE m.id >= " + start + " "
+					+ "ORDER BY m.id";
+			
+			Query query = em.createQuery(sql, changkon.imj.domain.Movie.class);
+			query.setMaxResults(size);
+			List<changkon.imj.domain.Movie> domainMovieList = query.getResultList();
+			
+			for (changkon.imj.domain.Movie movie : domainMovieList) {
+				movieList.add(MovieMapper.toDTOModel(movie));
+			}
+			
+			tx.commit();
+			
+			movies.setMovies(movieList);
+			
+			return movies;
+		} catch (Exception e) {
+			logger.error("Querying movie list resulted in error");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
+		
+		return null;
+	}
+	
 	public Movie queryMovie(long id) {
 		Movie dtoMovie = null;
 		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();

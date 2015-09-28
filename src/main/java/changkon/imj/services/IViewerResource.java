@@ -8,6 +8,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
@@ -17,6 +18,7 @@ import changkon.imj.dto.Log;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
 import changkon.imj.dto.ViewerRecommendedMovies;
+import changkon.imj.dto.Viewers;
 
 @Path("/viewer")
 public interface IViewerResource {
@@ -38,6 +40,14 @@ public interface IViewerResource {
 	@Produces({"application/xml", "application/json"})
 	@Path("{id:\\d+}")
 	public Viewer queryViewer(@PathParam("id") long id);
+	
+	@GET
+	@Produces({"application/xml", "application/json"})
+	public Viewers queryViewerList();
+	
+	@GET
+	@Produces({"application/xml", "application/json"})
+	public Viewers queryViewerList(@QueryParam("startId") int start, @QueryParam("size") int size);
 	
 	@POST
 	@Consumes({"application/xml", "application/json"})

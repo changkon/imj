@@ -1,8 +1,10 @@
 package changkon.imj.services;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -27,9 +29,11 @@ import org.slf4j.LoggerFactory;
 import changkon.imj.domain.Genre;
 import changkon.imj.dto.Log;
 import changkon.imj.dto.Movie;
+import changkon.imj.dto.Movies;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
 import changkon.imj.dto.ViewerRecommendedMovies;
+import changkon.imj.dto.Viewers;
 import changkon.imj.mapper.LogMapper;
 import changkon.imj.mapper.MovieMapper;
 import changkon.imj.mapper.ViewerMapper;
@@ -385,5 +389,85 @@ public class ViewerResource implements IViewerResource {
 				}
 			}
 		).start();
+	}
+
+	@Override
+	public Viewers queryViewerList() {
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			Viewers viewers = new Viewers();
+			
+			List<Viewer> viewerList = new ArrayList<Viewer>();
+			
+			EntityTransaction tx = em.getTransaction();
+			
+			tx.begin();
+			
+			// If I put query with lock type, it throws error
+			List<changkon.imj.domain.Viewer> domainViewerList = em.createQuery("SELECT v FROM Viewer v", changkon.imj.domain.Viewer.class)
+					.getResultList();
+			
+			for (changkon.imj.domain.Viewer viewer : domainViewerList) {
+				viewerList.add(ViewerMapper.toDTOModel(viewer));
+			}
+			
+			tx.commit();
+			
+			viewers.setViewers(viewerList);
+			
+			return viewers;
+		} catch (Exception e) {
+			logger.error("Querying viewer list resulted in error");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
+		
+		return null;
+	}
+
+	@Override
+	public Viewers queryViewerList(int start, int size) {
+		EntityManager em = Persistence.createEntityManagerFactory(IMJApplication.PERSISTENCEUNIT).createEntityManager();
+		
+		try {
+			Viewers viewers = new Viewers();
+			
+			List<Viewer> viewerList = new ArrayList<Viewer>();
+			
+			EntityTransaction tx = em.getTransaction();
+			
+			tx.begin();
+			
+			// String query
+			String sql = "SELECT v "
+					+ "FROM Viewer v "
+					+ "WHERE v.id >= " + start + " "
+					+ "ORDER BY v.id";
+			
+			Query query = em.createQuery(sql, changkon.imj.domain.Viewer.class);
+			query.setMaxResults(size);
+			List<changkon.imj.domain.Viewer> domainViewerList = query.getResultList();
+			
+			for (changkon.imj.domain.Viewer viewer : domainViewerList) {
+				viewerList.add(ViewerMapper.toDTOModel(viewer));
+			}
+			
+			tx.commit();
+			
+			viewers.setViewers(viewerList);
+			
+			return viewers;
+		} catch (Exception e) {
+			logger.error("Querying viewer list resulted in error");
+		} finally {
+			if (em.isOpen() || em != null) {
+				em.close();
+			}
+		}
+		
+		return null;
 	}
 }
