@@ -40,12 +40,15 @@ public class MovieTest {
 	
 	private Movie movie;
 	
-	private long createdMovieId;
-	private boolean createdMovie;
+	private long createdMovieIdXML;
+	private boolean createdMovieXML;
+	private long createdMovieIdJson;
+	private boolean createdMovieJson;
 	
 	@Before
 	public void setUp() {
-		createdMovie = false;
+		createdMovieXML = false;
+		createdMovieJson = false;
 		
 		Client client = ClientBuilder.newClient();
 		
@@ -84,8 +87,14 @@ public class MovieTest {
 		Response response = target.request().delete();
 		response.close();
 		
-		if (createdMovie) {
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", createdMovieId);
+		if (createdMovieXML) {
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", createdMovieIdXML);
+			response = target.request().delete();
+			response.close();
+		}
+		
+		if (createdMovieJson) {
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", createdMovieIdJson);
 			response = target.request().delete();
 			response.close();
 		}
@@ -129,6 +138,10 @@ public class MovieTest {
 			logger.info("URI for new movie is: " + location);
 			response.close();
 			
+			createdMovieXML = true;
+			String[] split = location.split("/");
+			createdMovieIdXML = Long.parseLong(split[split.length-1]);
+			
 			logger.info("Inputting json");
 
 			response = target.request().post(Entity.json(movie));
@@ -146,9 +159,9 @@ public class MovieTest {
 			
 			logger.info("Completed creating movie");
 			
-			createdMovie = true;
-			String[] split = location.split("/");
-			createdMovieId = Long.parseLong(split[split.length-1]);
+			createdMovieJson = true;
+			split = location.split("/");
+			createdMovieIdJson = Long.parseLong(split[split.length-1]);
 			
 		} finally {
 			client.close();
