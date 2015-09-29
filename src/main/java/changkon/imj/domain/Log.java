@@ -29,13 +29,13 @@ public class Log {
 	@GeneratedValue(generator="ID_GENERATOR")
 	private Long id;
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	@JoinColumn(name="VIEWER_ID", nullable=false)
 	private Viewer viewer;
 	
 	@OneToOne(
 			optional=false,
-			cascade=CascadeType.PERSIST)
+			cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	@JoinColumn(name="MOVIE_ID", nullable=false)
 	private Movie movie;
 	
