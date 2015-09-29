@@ -129,7 +129,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return (errorThrown == true) ? null : movies;
+		return (errorThrown == true || movies.getMovies().isEmpty()) ? null : movies;
 	}
 
 	public Movies queryMovieList(int start, int size) {
@@ -171,7 +171,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return (errorThrown == true) ? null : movies;
+		return (errorThrown == true || movies.getMovies().isEmpty()) ? null : movies;
 	}
 	
 	public Movie queryMovie(long id) {
@@ -258,7 +258,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return (errorThrown == true) ? null : movieCast;
+		return (errorThrown == true || movieCast.getCast().isEmpty()) ? null : movieCast;
 	}
 	
 	public void updateCast(long id, MovieCast cast) {
@@ -308,7 +308,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return (errorThrown == true) ? null : description;
+		return (errorThrown == true || description.getDescription().equals("") || description.getDescription() == null) ? null : description;
 	}
 	
 	public void updateDescription(long id, MovieDescription description) {
@@ -357,7 +357,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return (errorThrown == true) ? null : releaseDates;
+		return (errorThrown == true || releaseDates.getReleases().isEmpty()) ? null : releaseDates;
 	}
 
 	public void updateReleaseDates(long id, MovieReleaseDates movieReleaseDates) {
@@ -407,7 +407,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return (errorThrown == true) ? null : poster;
+		return (errorThrown == true || poster.getUrl().equals("") || poster.getUrl() == null) ? null : poster;
 	}
 
 	public void updatePoster(long id, MoviePoster poster) {

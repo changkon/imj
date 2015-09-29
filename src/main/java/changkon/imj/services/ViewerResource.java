@@ -30,7 +30,6 @@ import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
 import changkon.imj.dto.ViewerRecommendedMovies;
 import changkon.imj.dto.Viewers;
-import changkon.imj.jackson.JsonPrint;
 import changkon.imj.mapper.LogMapper;
 import changkon.imj.mapper.MovieMapper;
 import changkon.imj.mapper.ViewerMapper;
@@ -239,7 +238,7 @@ public class ViewerResource implements IViewerResource {
 			}
 		}
 
-		return (errorThrown == true) ? null : viewerLogs;
+		return (errorThrown == true || viewerLogs.getMovieLog().isEmpty()) ? null : viewerLogs;
 	}
 
 	@Override
@@ -305,7 +304,7 @@ public class ViewerResource implements IViewerResource {
 			}
 		}
 
-		return (errorThrown == true) ? null : recommendedMovies;
+		return (errorThrown == true || recommendedMovies.getRecommendedMovies().isEmpty()) ? null : recommendedMovies;
 	}
 
 	public void movieNotification(final long viewerId, final long movieId, @Suspended final AsyncResponse response) {
@@ -409,7 +408,7 @@ public class ViewerResource implements IViewerResource {
 			// If I put query with lock type, it throws error
 			List<changkon.imj.domain.Viewer> domainViewerList = em.createQuery("SELECT v FROM Viewer v", changkon.imj.domain.Viewer.class)
 					.getResultList();
-			
+
 			for (changkon.imj.domain.Viewer viewer : domainViewerList) {
 				viewerList.add(ViewerMapper.toDTOModel(viewer));
 			}
@@ -427,7 +426,7 @@ public class ViewerResource implements IViewerResource {
 			}
 		}
 		
-		return (errorThrown == true) ? null : viewers;
+		return (errorThrown == true || viewers.getViewers().isEmpty()) ? null : viewers;
 	}
 
 	@Override
@@ -470,6 +469,6 @@ public class ViewerResource implements IViewerResource {
 			}
 		}
 		
-		return (errorThrown == true) ? null : viewers;
+		return (errorThrown == true || viewers.getViewers().isEmpty()) ? null : viewers;
 	}
 }
