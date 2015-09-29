@@ -50,6 +50,7 @@ public class OMDBTest {
 		movieId = Long.parseLong(split[split.length-1]);
 		
 		response.close();
+		client.close();
 	}
 	
 	@After
@@ -58,6 +59,7 @@ public class OMDBTest {
 		WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", movieId);
 		Response response = target.request().delete();
 		response.close();
+		client.close();
 	}
 	
 	@Test

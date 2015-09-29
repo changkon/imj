@@ -56,6 +56,8 @@ public class RecommendedMovieTest {
 		viewerId = Long.parseLong(split[split.length-1]);
 		
 		response.close();
+		
+		client.close();
 	}
 	
 	@After
@@ -64,6 +66,7 @@ public class RecommendedMovieTest {
 		WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", viewerId);
 		Response response = target.request().delete();
 		response.close();
+		client.close();
 	}
 	
 	@Test
@@ -107,6 +110,7 @@ public class RecommendedMovieTest {
 				fail();
 			}
 
+			logger.info("Updated recommended movies successfully");
 		} finally {
 			client.close();
 		}
@@ -157,6 +161,7 @@ public class RecommendedMovieTest {
 			}
 			
 			response.close();
+			logger.info("Retrieved recommended movies successfully");
 			
 		} finally {
 			client.close();

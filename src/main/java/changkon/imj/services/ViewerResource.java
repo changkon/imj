@@ -354,7 +354,7 @@ public class ViewerResource implements IViewerResource {
 
 					movieTime = releaseDates.get(viewerCountry);
 
-					// There is key which matches viewers country
+					// No key which matches viewers country
 					if (movieTime == null) {
 						Map.Entry<String, Date> entry = releaseDates.entrySet().iterator().next();
 
@@ -362,6 +362,7 @@ public class ViewerResource implements IViewerResource {
 						movieTimeJoda = new DateTime(entry.getValue());
 
 					} else {
+						// There is key which matches viewers country
 						movieTimeJoda = new DateTime(movieTime);
 					}
 

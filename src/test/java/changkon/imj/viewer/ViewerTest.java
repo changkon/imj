@@ -15,6 +15,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,69 @@ import changkon.imj.services.IMJApplication;
 public class ViewerTest {
 
 	private Logger logger = LoggerFactory.getLogger(ViewerTest.class);
+	
+	private Viewer viewer;
+	
+	private boolean createdViewer;
+	private long createdViewerId;
+	
+	private boolean createdMovie;
+	private long createdMovieId;
+	
+	@Before
+	public void setUp() {
+		// initialize false
+		createdViewer = false;
+		createdMovie = false;
+		
+		Client client = ClientBuilder.newClient();
+		
+		Viewer viewer = new Viewer();
+		viewer.setAge(19);
+		viewer.setCountry("New Zealand");
+		viewer.setFirstName("Luke");
+		viewer.setLastName("Holly");
+		viewer.setGender(Gender.MALE);
+		
+		WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
+		Response response = target.request().post(Entity.xml(viewer));
+		
+		String location = response.getLocation().toString();
+		String[] split = location.split("/");
+		long id = Long.parseLong(split[split.length-1]);
+		
+		logger.info("Created viewer id is: " + id);
+		
+		response.close();
+		
+		target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", id);
+		this.viewer = target.request().get(Viewer.class);
+		response.close();
+		
+		client.close();
+	}
+	
+	@After
+	public void tearDown() {
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", viewer.getId());
+		Response response = target.request().delete();
+		response.close();
+		
+		if (createdViewer) {
+			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", createdViewerId);
+			response = target.request().delete();
+			response.close();
+		}
+		
+		if (createdMovie) {
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", createdMovieId);
+			response = target.request().delete();
+			response.close();
+		}
+		
+		client.close();
+	}
 	
 	@Test
 	public void testViewerCreate() {
@@ -55,7 +120,9 @@ public class ViewerTest {
 			}
 			
 			String location = response.getLocation().toString();
-			
+			String[] split = location.split("/");
+			createdViewerId = Long.parseLong(split[split.length-1]);
+			createdViewer = true;
 			logger.info("URI for new viewer is: " + location);
 			
 			response.close();
@@ -71,33 +138,11 @@ public class ViewerTest {
 		
 		Client client = ClientBuilder.newClient();
 		
-		try {
-			
-			Viewer viewer = new Viewer();
-			viewer.setAge(25);
-			viewer.setCountry("Australia");
-			viewer.setFirstName("Jack");
-			viewer.setLastName("Lewis");
-			viewer.setGender(Gender.MALE);
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
-			Response response = target.request().post(Entity.xml(viewer));
-			
-			String location = response.getLocation().toString();
-			
-			response.close();
-			
-			logger.info("URI for new viewer is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created viewer id is: " + id);
-			
+		try {	
 			// Delete viewer
-			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", id);
+			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", viewer.getId());
 			
-			response = target.request().delete();
+			Response response = target.request().delete();
 			
 			int status = response.getStatus();
 			
@@ -119,28 +164,6 @@ public class ViewerTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			// Create viewer
-			Viewer viewer = new Viewer();
-			viewer.setAge(20);
-			viewer.setFirstName("Jennifer");
-			viewer.setLastName("Luo");
-			viewer.setCountry("China");
-			viewer.setGender(Gender.FEMALE);
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
-			
-			Response response = target.request().post(Entity.xml(viewer));
-			
-			String location = response.getLocation().toString();
-			
-			logger.info("URI for new viewer is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			
-			response.close();
-			
 			Viewer updateViewer = new Viewer();
 			updateViewer.setAge(20);
 			updateViewer.setFirstName("Jennifer");
@@ -148,9 +171,9 @@ public class ViewerTest {
 			updateViewer.setCountry("China");
 			updateViewer.setGender(Gender.FEMALE);
 			
-			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", id);
+			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", viewer.getId());
 			
-			response = target.request().put(Entity.xml(updateViewer));
+			Response response = target.request().put(Entity.xml(updateViewer));
 			
 			int status = response.getStatus();
 			
@@ -160,6 +183,16 @@ public class ViewerTest {
 				logger.error("Failed to update viewer. Returned with response code: " + status);
 				fail();
 			}
+			
+			// Check that update is successful
+			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", viewer.getId());
+			Viewer queryViewer = target.request().get(Viewer.class);
+			
+			assertEquals(updateViewer.getAge(), queryViewer.getAge());
+			assertEquals(updateViewer.getFirstName(), queryViewer.getFirstName());
+			assertEquals(updateViewer.getLastName(), queryViewer.getLastName());
+			assertEquals(updateViewer.getCountry(), queryViewer.getCountry());
+			assertEquals(updateViewer.getGender(), queryViewer.getGender());
 			
 			logger.info("Updated viewer successfully");
 			
@@ -176,28 +209,7 @@ public class ViewerTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			Viewer viewer = new Viewer();
-			viewer.setAge(20);
-			viewer.setFirstName("Chang Kon");
-			viewer.setLastName("Han");
-			viewer.setCountry("South Korea");
-			viewer.setGender(Gender.MALE);
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
-			
-			Response response = target.request().post(Entity.xml(viewer));
-			
-			String location = response.getLocation().toString();
-			
-			logger.info("URI for new viewer is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			
-			response.close();
-			
-			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", id);
+			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", viewer.getId());
 			Viewer queryViewer = target.request().get(Viewer.class);
 			
 			assertEquals(viewer.getAge(), queryViewer.getAge());
@@ -220,29 +232,7 @@ public class ViewerTest {
 		logger.info("Testing movie notification");
 		final Client client = ClientBuilder.newClient();
 		
-		try {
-			
-			// Create viewer
-			Viewer viewer = new Viewer();
-			viewer.setFirstName("Chang Kon");
-			viewer.setLastName("Han");
-			viewer.setCountry("South Korea");
-			viewer.setAge(20);
-			viewer.setGender(Gender.MALE);
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
-			Response response = target.request().post(Entity.xml(viewer));
-			
-			String location = response.getLocation().toString();
-			
-			response.close();
-			
-			logger.info("URI for new viewer is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long viewerId = Long.parseLong(split[split.length-1]);
-			
+		try {		
 			int timeDifference = 10;
 			
 			// Create mock movie
@@ -259,22 +249,23 @@ public class ViewerTest {
 			movie.setRelease(releaseDate);
 			
 			// Add movie
-			target = client.target(IMJApplication.BASEURI + "/movie");
-			response = target.request().post(Entity.xml(movie));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
+			Response response = target.request().post(Entity.xml(movie));
 			
-			location = response.getLocation().toString();
+			String location = response.getLocation().toString();
 			
 			response.close();
 			
 			logger.info("URI for new movie is: " + location);
 			
-			split = location.split("/");
+			String[] split = location.split("/");
 			
-			long movieId = Long.parseLong(split[split.length-1]);
+			createdMovieId = Long.parseLong(split[split.length-1]);
+			createdMovie = true;
 			
 			Map<String, Object> resolveTemplateMap = new HashMap<String, Object>();
-			resolveTemplateMap.put("viewerId", viewerId);
-			resolveTemplateMap.put("movieId", movieId);
+			resolveTemplateMap.put("viewerId", viewer.getId());
+			resolveTemplateMap.put("movieId", createdMovieId);
 
 			// Subscribing to movie. Get notification
 			final WebTarget targetNotification = client.target(IMJApplication.BASEURI + "/viewer/{viewerId:\\d+}/recommended/{movieId:\\d+}").resolveTemplates(resolveTemplateMap);

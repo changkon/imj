@@ -1,9 +1,6 @@
 package changkon.imj.viewer;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import java.util.Set;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -12,6 +9,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +22,53 @@ import changkon.imj.dto.Log;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
-import changkon.imj.jackson.JsonPrint;
-import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
 
 public class LogTest {
 
 	private Logger logger = LoggerFactory.getLogger(LogTest.class);
+	
+	private Viewer viewer;
+	
+	@Before
+	public void setUp() {
+		Client client = ClientBuilder.newClient();
+		
+		Viewer viewer = new Viewer();
+		viewer.setCountry("South Korea");
+		viewer.setFirstName("Chang Kon");
+		viewer.setLastName("Han");
+		viewer.setGender(Gender.MALE);
+		
+		WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
+		Response response = target.request().post(Entity.xml(viewer));
+		
+		String location = response.getLocation().toString();
+		logger.info("URI for new viewer is: " + location);
+		
+		String[] split = location.split("/");
+		
+		long id = Long.parseLong(split[split.length-1]);
+		
+		response.close();
+		
+		target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", id);
+		
+		this.viewer = target.request().get(Viewer.class);
+		
+		response.close();
+		
+		client.close();
+	}
+	
+	@After
+	public void tearDown() {
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}").resolveTemplate("id", viewer.getId());
+		Response response = target.request().delete();
+		response.close();
+		client.close();
+	}
 	
 	@Test
 	public void testLogCreate() {
@@ -38,13 +77,6 @@ public class LogTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			Viewer viewer = new Viewer();
-			viewer.setAge(20);
-			viewer.setCountry("South Korea");
-			viewer.setFirstName("Chang Kon");
-			viewer.setLastName("Han");
-			viewer.setGender(Gender.MALE);
-			
 			Movie movie = new Movie();
 			movie.setTitle("Maze Runner");
 			movie.setDirector("Wes Ball");
@@ -54,31 +86,16 @@ public class LogTest {
 			movie.setGenre(Genre.ACTION);
 			movie.setRelease(new DateTime(2014, 10, 10, 0, 0));
 			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
-			Response response = target.request().post(Entity.xml(viewer));
-			
-			String location = response.getLocation().toString();
-			
-			logger.info("URI for new viewer is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			
-			response.close();
-			
-			target = client.target(IMJApplication.BASEURI + "/movie");
-			response = target.request().post(Entity.xml(movie));
-			response.close();
-			
 			Log log = new Log();
 			log.setDate(new DateTime(2015, 9, 26, 0, 0));
 			log.setGeoLocation(new GeoLocation(51.5033630, -0.132885));
 			log.setMovie(movie);
 			log.setViewer(viewer);
 			
-			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/log").resolveTemplate("id", id);
-			response = target.request().post(Entity.xml(log));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/log").resolveTemplate("id", viewer.getId());
+			
+			// Post with xml
+			Response response = target.request().post(Entity.xml(log));
 			
 			int status = response.getStatus();
 
@@ -89,8 +106,8 @@ public class LogTest {
 			
 			response.close();
 			
+			// Post with json
 			response = target.request().post(Entity.json(log));
-			
 			status = response.getStatus();
 
 			if (status != 201) {
@@ -99,6 +116,7 @@ public class LogTest {
 			}
 			
 			response.close();
+			logger.info("Created log successfully");
 			
 		} finally {
 			client.close();
@@ -112,28 +130,7 @@ public class LogTest {
 		
 		Client client = ClientBuilder.newClient();
 		
-		try {
-			Viewer viewer = new Viewer();
-			viewer.setAge(30);
-			viewer.setCountry("USA");
-			viewer.setFirstName("Alex");
-			viewer.setLastName("Hamilton");
-			viewer.setGender(Gender.MALE);
-			
-			// Add viewer to database
-			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer");
-			Response response = target.request().post(Entity.xml(viewer));
-			
-			String location = response.getLocation().toString();
-			
-			logger.info("URI for new viewer is: " + location);
-			
-			response.close();
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			
+		try {			
 			// Create some movies for log entries
 			Movie movie1 = new Movie();
 			movie1.setTitle("The Hunger Games");
@@ -167,15 +164,19 @@ public class LogTest {
 			log2.setGeoLocation(new GeoLocation(-36.852049, 174.767817));
 			
 			// Add to database
-			target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/log").resolveTemplate("id", id);
-			response = target.request().post(Entity.xml(log1));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/viewer/{id:\\d+}/log").resolveTemplate("id", viewer.getId());
+			
+			// Post log with xml
+			Response response = target.request().post(Entity.xml(log1));
 			
 			response.close();
 			
-			response = target.request().post(Entity.xml(log2));
+			// Post log with json
+			response = target.request().post(Entity.json(log2));
 			response.close();
 			
 			logger.info("Querying logs for user");
+			
 			// Query logs for user
 			ViewerLogs viewerLogs = target.request().get(ViewerLogs.class);
 			response.close();
@@ -185,6 +186,7 @@ public class LogTest {
 				fail();
 			}
 			
+			logger.info("Retrieved viewer logs successfully");
 		} finally {
 			client.close();
 		}

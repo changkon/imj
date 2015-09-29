@@ -16,6 +16,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ import changkon.imj.dto.MovieDescription;
 import changkon.imj.dto.MoviePoster;
 import changkon.imj.dto.MovieReleaseDates;
 import changkon.imj.dto.Movies;
+import changkon.imj.dto.Viewer;
 import changkon.imj.jackson.JsonPrint;
 import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
@@ -34,6 +37,61 @@ import changkon.imj.services.IMJApplication;
 public class MovieTest {
 
 	private Logger logger = LoggerFactory.getLogger(MovieTest.class);
+	
+	private Movie movie;
+	
+	private long createdMovieId;
+	private boolean createdMovie;
+	
+	@Before
+	public void setUp() {
+		createdMovie = false;
+		
+		Client client = ClientBuilder.newClient();
+		
+		// Create The Social Network
+		Movie movie = new Movie();
+		movie.setTitle("The Social Network");
+		movie.setDirector("David Fincher");
+		movie.setGenre(Genre.DRAMAFILM);
+		movie.setLanguage("English");
+		movie.setRelease(new DateTime(2010, 11, 11, 0, 0));
+		movie.setCountry("USA");
+		movie.setRuntime(120);
+		
+		WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
+		Response response = target.request().post(Entity.xml(movie));
+		
+		String location = response.getLocation().toString();
+		String[] split = location.split("/");
+		long id = Long.parseLong(split[split.length-1]);
+		
+		logger.info("Created movie id is: " + id);
+		
+		response.close();
+		
+		target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", id);
+		this.movie = target.request().get(Movie.class);
+		response.close();
+		
+		client.close();
+	}
+	
+	@After
+	public void tearDown() {
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", movie.getId());
+		Response response = target.request().delete();
+		response.close();
+		
+		if (createdMovie) {
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", createdMovieId);
+			response = target.request().delete();
+			response.close();
+		}
+		
+		client.close();
+	}
 	
 	/**
 	 * Tests ability for movie to be created and persisted into database
@@ -88,6 +146,10 @@ public class MovieTest {
 			
 			logger.info("Completed creating movie");
 			
+			createdMovie = true;
+			String[] split = location.split("/");
+			createdMovieId = Long.parseLong(split[split.length-1]);
+			
 		} finally {
 			client.close();
 		}
@@ -101,12 +163,6 @@ public class MovieTest {
 		try {
 			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
 			target.request().get(Movies.class);
-			
-			//logger.info("Printing movies list");
-			
-			//JAXB.prettyPrint(movies, Movies.class, logger);
-			//JsonPrint.prettyPrint(movies, logger);
-			
 		} finally {
 			client.close();
 		}
@@ -118,33 +174,8 @@ public class MovieTest {
 		
 		Client client = ClientBuilder.newClient();
 		try {
-			// Have to create movie first to ensure movie is in database
-			// Create The Social Network
-			Movie movie = new Movie();
-			movie.setTitle("The Social Network");
-			movie.setDirector("David Fincher");
-			movie.setGenre(Genre.DRAMAFILM);
-			movie.setLanguage("English");
-			movie.setRelease(new DateTime(2010, 11, 11, 0, 0));
-			movie.setCountry("USA");
-			movie.setRuntime(120);
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			
-			String location = response.getLocation().toString();
-			
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
 			logger.info("Querying created movie");
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", id);
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", movie.getId());
 			
 			Movie queryMovie = target.request().get(Movie.class);
 			
@@ -170,29 +201,8 @@ public class MovieTest {
 		
 		Client client = ClientBuilder.newClient();
 		try {
-			// Have to create movie first. Has incorrect information
-			Movie movie = new Movie();
-			movie.setTitle("Citizen Kane");
-			movie.setDirector("Orson Welles");
-			movie.setCountry("USA");
-			movie.setLanguage("French");
-			movie.setRuntime(60);
-			movie.setGenre(Genre.ACTION);
-			movie.setRelease(new DateTime(1941, 9, 5, 0, 0));
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
 			logger.info("Updating created movie details");
+			
 			Movie correctMovie = new Movie();
 			correctMovie.setTitle("Citizen Kane");
 			correctMovie.setDirector("Orson Welles");
@@ -202,14 +212,14 @@ public class MovieTest {
 			correctMovie.setGenre(Genre.DRAMAFILM);
 			correctMovie.setRelease(new DateTime(1941, 9, 5, 0, 0));
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(correctMovie));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(correctMovie));
 			response.close();
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", id);
-			
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}").resolveTemplate("id", movie.getId());
 			Movie queryMovie = target.request().get(Movie.class);
 			response.close();
+			
 			// Check that updated values are correct
 			assertTrue(correctMovie.equals(queryMovie));
 			
@@ -227,28 +237,6 @@ public class MovieTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			// Create movie first
-			Movie movie = new Movie();
-			movie.setTitle("Birdman");
-			movie.setDirector("Alejandro G. Inarritu");
-			movie.setCountry("USA");
-			movie.setGenre(Genre.DRAMAFILM);
-			movie.setLanguage("English");
-			movie.setRelease(new DateTime(2014, 10, 17, 0, 0));
-			movie.setRuntime(119);
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
 			Collection<String> cast = new ArrayList<String>();
 			cast.add("Michael Keaton");
 			cast.add("Emma Stone");
@@ -258,8 +246,8 @@ public class MovieTest {
 			MovieCast movieCast = new MovieCast();
 			movieCast.setCast(cast);
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/cast").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(movieCast));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/cast").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(movieCast));
 
 			int status = response.getStatus();
 			
@@ -293,29 +281,7 @@ public class MovieTest {
 		
 		Client client = ClientBuilder.newClient();
 		
-		try {
-			// Create movie first
-			Movie movie = new Movie();
-			movie.setTitle("Interstellar");
-			movie.setDirector("Christopher Nolan");
-			movie.setCountry("USA");
-			movie.setGenre(Genre.ADVENTURE);
-			movie.setLanguage("English");
-			movie.setRelease(new DateTime(2014, 11, 7, 0, 0));
-			movie.setRuntime(169);
-			
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
+		try {			
 			Collection<String> cast = new ArrayList<String>();
 			cast.add("Matthew McConaughey");
 			cast.add("Anne Hathaway");
@@ -326,12 +292,12 @@ public class MovieTest {
 			MovieCast movieCast = new MovieCast();
 			movieCast.setCast(cast);
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/cast").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(movieCast));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/cast").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(movieCast));
 			response.close();
 			
 			logger.info("Query movie cast");
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/cast").resolveTemplate("id", id);
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/cast").resolveTemplate("id", movie.getId());
 			MovieCast retrieveMovieCast = target.request().get(MovieCast.class);
 
 			if (retrieveMovieCast == null) {
@@ -359,43 +325,21 @@ public class MovieTest {
 		
 		Client client = ClientBuilder.newClient();
 		
-		try {
-			Movie movie = new Movie();
-			movie.setDirector("Chris Buck");
-			movie.setTitle("Frozen");
-			movie.setGenre(Genre.ANIMATION);
-			movie.setCountry("USA");
-			movie.setLanguage("English");
-			movie.setRuntime(102);
-			movie.setRelease(new DateTime(2013, 12, 6, 0, 0));
-			
-			logger.info("Putting movie into database");
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
+		try {			
 			MovieDescription description = new MovieDescription();
 			
 			String movieDescription = "When the newly crowned Queen Elsa accidentally uses her power to turn things into ice to curse her home in infinite winter, her sister, Anna, teams up with a mountain man, his playful reindeer, and a snowman to change the weather condition.";
 			
 			description.setDescription(movieDescription);
 			
-			logger.info("Adding movie description to movie id: " + id);
+			logger.info("Adding movie description to movie id: " + movie.getId());
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/description").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(description));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/description").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(description));
 			response.close();
 			logger.info("Querying movie description");
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/description").resolveTemplate("id", id);
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/description").resolveTemplate("id", movie.getId());
 			MovieDescription queryDescription = target.request().get(MovieDescription.class);
 			
 			assertEquals(movieDescription, queryDescription.getDescription());
@@ -414,38 +358,16 @@ public class MovieTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			Movie movie = new Movie();
-			movie.setDirector("Martin Scorsese");
-			movie.setTitle("The Wolf of Wall Street");
-			movie.setGenre(Genre.BIOGRAPHY);
-			movie.setCountry("USA");
-			movie.setLanguage("English");
-			movie.setRuntime(180);
-			movie.setRelease(new DateTime(2014, 1, 17, 0, 0));
-			
-			logger.info("Putting movie into database");
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
 			MovieDescription description = new MovieDescription();
 			
 			String movieDescription = "Based on the true story of Jordan Belfort, from his rise to a wealthy stock-broker living the high life to his fall involving crime, corruption and the federal government.";
 			
 			description.setDescription(movieDescription);
 			
-			logger.info("Adding movie description to movie id: " + id);
+			logger.info("Adding movie description to movie id: " + movie.getId());
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/description").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(description));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/description").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(description));
 			
 			int status = response.getStatus();
 			
@@ -477,28 +399,6 @@ public class MovieTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			Movie movie = new Movie();
-			movie.setDirector("David Fincher");
-			movie.setTitle("Gone Girl");
-			movie.setGenre(Genre.THRILLER);
-			movie.setCountry("USA");
-			movie.setLanguage("English");
-			movie.setRuntime(149);
-			movie.setRelease(new DateTime(2014, 10, 3, 0, 0));
-			
-			logger.info("Putting movie into database");
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
 			MovieReleaseDates releaseDates = new MovieReleaseDates();
 			
 			Map<String, DateTime> releaseDateMap = new HashMap<String, DateTime>();
@@ -511,14 +411,14 @@ public class MovieTest {
 			
 			releaseDates.setReleases(releaseDateMap);
 			
-			logger.info("Adding movie release dates to movie id: " + id);
+			logger.info("Adding movie release dates to movie id: " + movie.getId());
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/release").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(releaseDates));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/release").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(releaseDates));
 			response.close();
 			logger.info("Querying movie release dates");
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/release").resolveTemplate("id", id);
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/release").resolveTemplate("id", movie.getId());
 			MovieReleaseDates queryReleaseDates = target.request().get(MovieReleaseDates.class);
 			Map<String, DateTime> queryReleaseDateMap = queryReleaseDates.getReleases();
 			
@@ -542,28 +442,6 @@ public class MovieTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			Movie movie = new Movie();
-			movie.setDirector("David Fincher");
-			movie.setTitle("The Girl with the Dragon Tattoo");
-			movie.setGenre(Genre.CRIME);
-			movie.setCountry("USA");
-			movie.setLanguage("English");
-			movie.setRuntime(158);
-			movie.setRelease(new DateTime(2011, 12, 20, 0, 0));
-			
-			logger.info("Putting movie into database");
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
 			MovieReleaseDates releaseDates = new MovieReleaseDates();
 			
 			Map<String, DateTime> releaseDateMap = new HashMap<String, DateTime>();
@@ -575,10 +453,10 @@ public class MovieTest {
 			
 			releaseDates.setReleases(releaseDateMap);
 			
-			logger.info("Adding movie release dates to movie id: " + id);
+			logger.info("Adding movie release dates to movie id: " + movie.getId());
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/release").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(releaseDates));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/release").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(releaseDates));
 			int status = response.getStatus();
 			response.close();
 
@@ -606,43 +484,21 @@ public class MovieTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			Movie movie = new Movie();
-			movie.setDirector("Jonathan Demme");
-			movie.setTitle("The Silence of the Lambs");
-			movie.setGenre(Genre.CRIME);
-			movie.setCountry("USA");
-			movie.setLanguage("English");
-			movie.setRuntime(118);
-			movie.setRelease(new DateTime(1991, 5, 31, 0, 0));
-			
-			logger.info("Putting movie into database");
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
 			MoviePoster poster = new MoviePoster();
 			
 			String url = "http://ia.media-imdb.com/images/M/MV5BMTQ2NzkzMDI4OF5BMl5BanBnXkFtZTcwMDA0NzE1NA@@._V1_SX214_AL_.jpg";
 			
 			poster.setUrl(url);
 			
-			logger.info("Adding movie poster to movie id: " + id);
+			logger.info("Adding movie poster to movie id: " + movie.getId());
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/poster").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(poster));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/poster").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(poster));
 			response.close();
 			
 			logger.info("Querying movie poster");
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/poster").resolveTemplate("id", id);
+			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/poster").resolveTemplate("id", movie.getId());
 			MoviePoster queryMoviePoster = target.request().get(MoviePoster.class);
 
 			assertEquals(url, queryMoviePoster.getUrl());
@@ -661,38 +517,16 @@ public class MovieTest {
 		Client client = ClientBuilder.newClient();
 		
 		try {
-			Movie movie = new Movie();
-			movie.setDirector("David Fincher");
-			movie.setTitle("Se7en");
-			movie.setGenre(Genre.DRAMAFILM);
-			movie.setCountry("USA");
-			movie.setLanguage("English");
-			movie.setRuntime(127);
-			movie.setRelease(new DateTime(1996, 1, 5, 0, 0));
-			
-			logger.info("Putting movie into database");
-			WebTarget target = client.target(IMJApplication.BASEURI + "/movie");
-			Response response = target.request().post(Entity.xml(movie));
-			String location = response.getLocation().toString();
-			response.close();
-			
-			logger.info("URI for new movie is: " + location);
-			
-			String[] split = location.split("/");
-			
-			long id = Long.parseLong(split[split.length-1]);
-			logger.info("Created movie id is: " + id);
-			
 			MoviePoster poster = new MoviePoster();
 			
 			String url = "http://ia.media-imdb.com/images/M/MV5BMTQwNTU3MTE4NF5BMl5BanBnXkFtZTcwOTgxNDM2Mg@@._V1_SX214_AL_.jpg";
 			
 			poster.setUrl(url);
 			
-			logger.info("Adding movie poster to movie id: " + id);
+			logger.info("Adding movie poster to movie id: " + movie.getId());
 			
-			target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/poster").resolveTemplate("id", id);
-			response = target.request().put(Entity.xml(poster));
+			WebTarget target = client.target(IMJApplication.BASEURI + "/movie/{id:\\d+}/poster").resolveTemplate("id", movie.getId());
+			Response response = target.request().put(Entity.xml(poster));
 			int status = response.getStatus();
 			response.close();
 			
