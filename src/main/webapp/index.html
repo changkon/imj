@@ -3,9 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" />
-    <title>IMJ</title>
+    <title>Internet Movie Journal</title>
+
+    <!-- Include angular js file -->
+    <script src="./lib/angular.min.js"></script>
+    <!-- Include ui router -->
+    <script src="./lib/angular-ui-router.min.js"></script>
+    <!-- Load jquery. Dependency for bootstrap -->
+    <script src="./lib/jquery-2.1.4.min.js"></script>
+    <!-- Load bootstrap -->
+    <script src="./lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+    <!-- Load bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="./lib/bootstrap-3.3.5/css/bootstrap.min.css">
 </head>
 <body>
-	<p>Hello World</p>
+	<!-- Create navbar -->
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-links" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">IMJ</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="navbar-links">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#">Viewers</a></li>
+					<li><a href="#">Movies</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div id="#main">
+	</div>
+
+	<footer>
+		<div class="container-fluid">
+			<div class="row">Internet Movie Journal 2015</div>
+		</div>
+	</footer>
 </body>
 </html>
