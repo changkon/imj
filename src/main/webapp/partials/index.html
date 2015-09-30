@@ -1,0 +1,50 @@
+<div class="col-md-offset-1 col-md-4">
+	<h2>Viewers</h2>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Gender</th>
+				<th>Country</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="viewer in viewers | limitTo:limit">
+				<td>{{viewer.id}}</td>
+				<td>{{viewer["first-name"]}}</td>
+				<td>{{viewer["last-name"]}}</td>
+				<td>{{viewer.gender | lowercase}}</td>
+				<td>{{viewer.country}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<a ui-sref="viewers">See More</a>
+</div>
+<div class="col-md-5">
+	<h2>Movies</h2>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Title</th>
+				<th>Director</th>
+				<th>Country</th>
+				<th>Genre</th>
+				<th>Release</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="movie in movies | limitTo:limit">
+				<td>{{movie.id}}</td>
+				<td>{{movie.title}}</td>
+				<td>{{movie.director}}</td>
+				<td>{{movie.country}}</td>
+				<td>{{movie.genre | lowercase}}</td>
+				<td>{{movie.release | date: 'medium'}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<a ui-sref="movies">See More</a>
+</div>

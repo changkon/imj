@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" />
@@ -7,6 +7,7 @@
 
     <!-- Include angular js file -->
     <script src="./lib/angular.min.js"></script>
+    <script src="./lib/angular-resource.min.js"></script>
     <!-- Include ui router -->
     <script src="./lib/angular-ui-router.min.js"></script>
     <!-- Load jquery. Dependency for bootstrap -->
@@ -15,10 +16,12 @@
     <script src="./lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
     <!-- Load bootstrap css -->
     <link rel="stylesheet" type="text/css" href="./lib/bootstrap-3.3.5/css/bootstrap.min.css">
+    <!-- Load site css -->
+    <link rel="stylesheet" type="text/css" href="./css/main.css">
 </head>
 <body>
 	<!-- Create navbar -->
-	<nav class="navbar navbar-default">
+	<nav id="navbar" class="navbar navbar-default">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -40,7 +43,18 @@
 			</div>
 		</div>
 	</nav>
-	<div id="#main">
+	<div id="main">
+		<div ng-show="state.current.name == home" class="jumbotron">
+			<div class="container">
+				<h1>Internet Movie Journal</h1>
+				<p>Online logging system for movie viewers!</p>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div ui-view></div>
+			</div>
+		</div>
 	</div>
 
 	<footer>
@@ -48,5 +62,10 @@
 			<div class="row">Internet Movie Journal 2015</div>
 		</div>
 	</footer>
+
+	<!-- Load javascript -->
+	<script src="./js/app.js" type="text/javascript"></script>
+	<script src="./js/homeCtrl.js" type="text/javascript"></script>
+	<script src="./js/imjService.js" type="text/javascript"></script>
 </body>
 </html>
