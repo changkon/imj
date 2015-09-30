@@ -1,9 +1,13 @@
 var services = angular.module('app');
 
-services.factory('ViewerAllFactory', function($resource) {
+services.factory('ViewerIdFactory', function($resource) {
+	return $resource('/services/viewer/:id');
+});
+
+services.factory('ViewerFactory', function($resource) {
 	return $resource('/services/viewer', {});
 });
 
-services.factory('MovieAllFactory', function($resource) {
+services.factory('MovieFactory', function($resource) {
 	return $resource('/services/movie', {});
 });

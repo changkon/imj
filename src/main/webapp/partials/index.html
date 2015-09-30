@@ -13,8 +13,8 @@
 		<tbody>
 			<tr ng-repeat="viewer in viewers | limitTo:limit">
 				<td>{{viewer.id}}</td>
-				<td>{{viewer["first-name"]}}</td>
-				<td>{{viewer["last-name"]}}</td>
+				<td>{{viewer.first_name}}</td>
+				<td>{{viewer.last_name}}</td>
 				<td>{{viewer.gender | lowercase}}</td>
 				<td>{{viewer.country}}</td>
 			</tr>

@@ -31,11 +31,11 @@ public abstract class Person {
 	private Long id;
 	
 	@Column(name="FIRSTNAME")
-	@XmlElement(name="first-name")
+	@XmlElement(name="first_name")
 	private String firstName;
 	
 	@Column(name="LASTNAME")
-	@XmlElement(name="last-name")
+	@XmlElement(name="last_name")
 	private String lastName;
 	
 	@Column(name="AGE")

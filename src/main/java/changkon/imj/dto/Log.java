@@ -29,7 +29,7 @@ public class Log {
 	@XmlElement
 	private DateTime date;
 	
-	@XmlElement(name="geo-location")
+	@XmlElement(name="geo_location")
 	private GeoLocation geoLocation;
 	
 	public Log() {}

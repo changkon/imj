@@ -16,7 +16,7 @@ import changkon.imj.jaxb.ReleaseAdapter;
  * @author Chang Kon Han
  */
 
-@XmlRootElement(name="release-info")
+@XmlRootElement(name="release_info")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MovieReleaseDates {
 	

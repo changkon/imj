@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MovieCast {
 
-	@XmlElement(name="cast-member")
+	@XmlElement(name="cast_member")
 	private Collection<String> cast;
 	
 	/**

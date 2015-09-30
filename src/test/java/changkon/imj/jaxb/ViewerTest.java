@@ -12,8 +12,8 @@ public class ViewerTest {
 	@Test
 	public void testUnMarshal() {
 		String xml = "<viewer id=\"1\">"
-				+ "<first-name>Chang Kon</first-name>"
-				+ "<last-name>Han</last-name>"
+				+ "<first_name>Chang Kon</first_name>"
+				+ "<last_name>Han</last-name>"
 				+ "<age>20</age>"
 				+ "<gender>male</gender>"
 				+ "<country>South Korea</country>"
@@ -33,8 +33,8 @@ public class ViewerTest {
 	public void testMarshal() {
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
 				+ "<viewer id=\"1\">"
-				+ "<first-name>Chang Kon</first-name>"
-				+ "<last-name>Han</last-name>"
+				+ "<first_name>Chang Kon</first_name>"
+				+ "<last_name>Han</last_name>"
 				+ "<age>20</age>"
 				+ "<gender>male</gender>"
 				+ "<country>South Korea</country>"
