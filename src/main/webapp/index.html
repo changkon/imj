@@ -12,10 +12,14 @@
     <script src="./lib/angular-ui-router.min.js"></script>
     <!-- Load jquery. Dependency for bootstrap -->
     <script src="./lib/jquery-2.1.4.min.js"></script>
+    <!-- Pagination lib -->
+    <script src="./lib/dirPagination.js"></script>
     <!-- Load bootstrap -->
     <script src="./lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
     <!-- Load bootstrap css -->
     <link rel="stylesheet" type="text/css" href="./lib/bootstrap-3.3.5/css/bootstrap.min.css">
+	<!-- Font awesome -->
+	<link rel="stylesheet" type="text/css" href="./lib/font-awesome-4.4.0/css/font-awesome.min.css">
     <!-- Load site css -->
     <link rel="stylesheet" type="text/css" href="./css/main.css">
 </head>
@@ -44,7 +48,7 @@
 		</div>
 	</nav>
 	<div id="main">
-		<div ng-show="state.current.name == home" class="jumbotron">
+		<div class="jumbotron">
 			<div class="container">
 				<h1>Internet Movie Journal</h1>
 				<p>Online logging system for movie viewers!</p>

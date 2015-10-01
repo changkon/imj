@@ -1,6 +1,7 @@
 var app = angular.module('app');
 
 function Viewer(firstName, lastName, country, age, gender) {
+	this.id = null;
 	this.first_name = firstName;
 	this.last_name = lastName;
 	this.country = country;
@@ -31,10 +32,33 @@ app.controller('HomeCtrl', ['$scope', '$state', 'ViewerFactory', 'MovieFactory',
 }]);
 
 app.controller('ViewersCtrl', ['$scope', 'ViewerFactory', function($scope, ViewerFactory) {
-	$scope.addViewer = function(firstName, lastName, country, age, gender) {
-		Viewer viewer = new Viewer(firstName, lastName, country, age, gender);
-		viewer.$save();
+	$scope.limit = 30;
+	$scope.viewer = {};
+
+	$scope.createViewer = function() {
+		if (Object.keys($scope.viewer).length != 5) {
+			return;
+		}
+
+		var viewer = new Viewer($scope.viewer.firstName, $scope.viewer.lastName, $scope.viewer.country, $scope.viewer.age, $scope.viewer.gender);
+
+		// reset
+		$scope.viewer = {};
+
+		// add to database
+		ViewerFactory.save(viewer);
 	};
+
+	$scope.refresh = function() {
+		ViewerFactory.get({}, function(viewers) {
+			$scope.viewers = viewers.viewer;
+		});
+	};
+
+	// Initially load data
+	ViewerFactory.get({}, function(viewers) {
+		$scope.viewers = viewers.viewer;
+	});
 }]);
 
 app.controller('MoviesCtrl', ['$scope', function($scope) {

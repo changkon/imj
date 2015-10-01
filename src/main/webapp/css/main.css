@@ -9,4 +9,14 @@ body {
 #navbar {
   margin-bottom: 0px; }
 
+.table-header-info h1 {
+  margin: 0; }
+.table-header-info .table-button-panel {
+  display: flex;
+  align-items: center; }
+  .table-header-info .table-button-panel a {
+    display: inline-block !important;
+    margin-right: 30px;
+    cursor: pointer; }
+
 /*# sourceMappingURL=main.css.map */
