@@ -277,6 +277,10 @@ app.controller('MovieProfileCtrl',
 		]).then(function() {
 			if (typeof $scope.movie.id === 'undefined' || typeof $scope.movie.description === 'undefined' || typeof $scope.movie.poster ==='undefined' || typeof $scope.movie.cast === 'undefined') {
 				OMDBFactory.get({id: movieId}, function(movie) {
+					if ('Error' in movie) {
+						return;
+					}
+
 					// set description
 					$scope.movie.description = movie.Plot;
 					var description = new MovieDescription($scope.movie.description);
@@ -290,7 +294,8 @@ app.controller('MovieProfileCtrl',
 					// set cast
 					var cast = new MovieCast(movie.Actors);
 					$scope.movie.cast = cast.cast;
-					MovieCastFactory.update({id: movieId}, cast);		
+					MovieCastFactory.update({id: movieId}, cast);
+
 				});
 			}
 		});
