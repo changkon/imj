@@ -308,7 +308,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return (errorThrown == true || description.getDescription().equals("") || description.getDescription() == null) ? null : description;
+		return (errorThrown == true || description.getDescription() == null || description.getDescription().equals("")) ? null : description;
 	}
 	
 	public void updateDescription(long id, MovieDescription description) {
@@ -407,7 +407,7 @@ public class MovieResource implements IMovieResource {
 			}
 		}
 		
-		return (errorThrown == true || poster.getUrl().equals("") || poster.getUrl() == null) ? null : poster;
+		return (errorThrown == true || poster.getUrl() == null || poster.getUrl().equals("")) ? null : poster;
 	}
 
 	public void updatePoster(long id, MoviePoster poster) {

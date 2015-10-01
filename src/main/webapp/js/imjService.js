@@ -25,3 +25,26 @@ services.factory('RecommendedFactory', function($resource) {
 services.factory('MovieFactory', function($resource) {
 	return $resource('/services/movie', {});
 });
+
+services.factory('MovieIdFactory', function($resource) {
+	return $resource('/services/movie/:id', {}, {
+		'update': { method: "PUT" }
+	});
+});
+
+services.factory('MovieDescriptionFactory', function($resource) {
+	return $resource('/services/movie/:id/description', {});
+});
+
+services.factory('MoviePosterFactory', function($resource) {
+	return $resource('/services/movie/:id/poster', {});
+});
+
+services.factory('MovieCastFactory', function($resource) {
+	return $resource('/services/movie/:id/cast', {});
+});
+
+// OMDB
+services.factory('OMDBFactory', function($resource) {
+	return $resource('/services/omdb/:id', {});
+});

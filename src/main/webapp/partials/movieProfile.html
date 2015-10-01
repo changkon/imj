@@ -1,1 +1,88 @@
-<h1>Hello</h1>
+<div class="spacing-top col-md-offset-1 col-md-10">
+	<div class="row">
+		<h1 class="pull-left" style="margin: 0px;">{{movie.title}}</h1>
+		<button type="button" class="pull-right btn btn-lg btn-danger" data-toggle="modal" ui-sref="movie" ng-click="delete()">Delete</button>
+		<button type="button" class="pull-right btn btn-lg btn-success" data-toggle="modal" data-target="#editMovieModal" style="margin-right: 20px;">Edit</button>
+	</div>
+	<div class="row">
+		<div class="movie-profile-container">
+			<!-- Image -->
+			<div class="movie-profile" ng-if="movie.id">
+				<p>Id: {{movie.id}}</p>
+				<p>Title: {{movie.title}}</p>
+				<p>Genre: {{movie.genre | lowercase}}</p>
+				<p>Release: {{movie.release}}</p>
+				<p>Country: {{movie.country}}</p>
+				<p>Language: {{movie.language}}</p>
+				<p>Runtime: {{movie.runtime}}</p>
+				<h3>Description</h3>
+				<p>{{movie.description}}</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div id="cast-container">
+			<p ng-repeat="cast_member | movie.cast">{{cast_member}}</p>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createMovieModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Edit Movie</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="title">Title</label>
+						<input class="form-control" type="text" name="title" ng-model="editMovie.title" placeholder="Movie Title" id="title" required>
+					</div>
+					<div class="form-group">
+						<label for="director">Director</label>
+						<input class="form-control" type="text" name="director" ng-model="editMovie.director" placeholder="Movie Director" id="director" required>
+					</div>
+					<div class="form-group">
+						<label for="genre">Genre</label>
+						<select id="genre" class="form-control" ng-model="editMovie.genre">
+							<option value="ACTION">Action</option>
+							<option value="ADVENTURE">Adventure</option>
+							<option value="COMEDY">Comedy</option>
+							<option value="CRIME">Crime</option>
+							<option value="FANTASY">Fantasy</option>
+							<option value="HORROR">Horror</option>
+							<option value="MYSTERY">Mystery</option>
+							<option value="ROMANCE">Romance</option>
+							<option value="SCIENCEFICTION">Science Fiction</option>
+							<option value="THRILLER">Thriller</option>
+							<option value="ANIMATION">Animation</option>
+							<option value="DRAMAFILM">Drama Film</option>
+							<option value="BIOGRAPHY">Biography</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="release">Release</label>
+						<input class="form-control" type="date" name="release" ng-model="editMovie.release" placeholder="Movie Release" id="release" required>
+					</div>
+					<div class="form-group">
+						<label for="country">Country</label>
+						<input class="form-control" type="text" name="country" ng-model="editMovie.country" placeholder="Movie Country" id="country" required>
+					</div>
+					<div class="form-group">
+						<label for="language">Language</label>
+						<input class="form-control" type="text" name="language" ng-model="editMovie.language" placeholder="Movie Language" id="language" required>
+					</div>
+					<div class="form-group">
+						<label for="runtime">Runtime</label>
+						<input class="form-control" type="number" name="runtime" ng-model="editMovie.runtime" placeholder="Movie Runtime" id="runtime" required>
+					</div>
+
+					<button class="btn btn-primary" data-dismiss="modal" type="submit" ng-click="edit()">Edit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

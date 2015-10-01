@@ -201,3 +201,68 @@ app.controller('MoviesCtrl', ['$scope', 'MovieFactory', function($scope, MovieFa
 		$scope.movies = movies.movie;
 	});
 }]);
+
+app.controller('MovieProfileCtrl',
+	['$scope', '$stateParams', '$q', 'MovieIdFactory', 'MovieDescriptionFactory', 'MoviePosterFactory', 'MovieCastFactory', 'OMDBFactory',
+	function($scope, $stateParams, $q, MovieIdFactory, MovieDescriptionFactory, MoviePosterFactory, MovieCastFactory, OMDBFactory) {
+
+		var movieId = $stateParams.id;
+		$scope.movie = {};
+		$scope.editMovie = {};
+
+		$scope.refreshMovie = function() {
+			MovieIdFactory.get({id: movieId}, function(movie) {
+				$scope.movie.id = movie.id;
+				$scope.movie.title = movie.title;
+				$scope.movie.director = movie.director;
+				$scope.movie.genre = movie.genre;
+				$scope.movie.release = movie.release;
+				$scope.movie.country = movie.country;
+				$scope.movie.language = movie.language;
+				$scope.movie.runtime = movie.runtime;
+			});
+		};
+
+		$scope.delete = function() {
+			MovieIdFactory.delete({id: movieId});
+		};
+
+		$scope.edit = function() {
+			if (Object.keys($scope.editMovie).length != 7) {
+				return;
+			}
+
+			var movie = new Movie($scope.editMovie.title, $scope.editMovie.director, $scope.editMovie.genre, $scope.editMovie.release, $scope.editMovie.country, $scope.editMovie.language, $scope.editMovie.runtime);
+
+			// reset
+			$scope.editViewer = {};
+
+			MovieIdFactory.update({id: movieId}, movie);
+			// refresh
+			$scope.refreshMovie();
+		};
+
+		$q.all([
+			MovieIdFactory.get({id: movieId}, function(movie) {
+				$scope.movie.id = movie.id;
+				$scope.movie.title = movie.title;
+				$scope.movie.director = movie.director;
+				$scope.movie.genre = movie.genre;
+				$scope.movie.release = movie.release;
+				$scope.movie.country = movie.country;
+				$scope.movie.language = movie.language;
+				$scope.movie.runtime = movie.runtime;
+			}),
+			MovieDescriptionFactory.get({id: movieId}, function(movie) {
+				$scope.movie.description = movie.description;
+			}),
+			MoviePosterFactory.get({id: movieId}, function(movie) {
+				$scope.movie.poster = movie.poster;
+			}),
+			MovieCastFactory.get({id: movieId}, function(movie) {
+				$scope.movie.cast = movie.cast;
+			})
+			]).then(function() {
+				console.log('all')
+			});
+}]);
