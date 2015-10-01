@@ -5,10 +5,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 @XmlRootElement(name="description")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MovieDescription {
 	
+	@JsonProperty("description")
 	@XmlValue
 	private String description;
 	

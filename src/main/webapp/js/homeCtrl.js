@@ -27,6 +27,18 @@ function Log(movie, date, geo_location) {
 	this.geo_location = geo_location;
 }
 
+function MovieDescription(description) {
+	this.description = description;
+}
+
+function MoviePoster(poster) {
+	this.url = poster;
+}
+
+function MovieCast(cast) {
+	this.cast = cast.split(", ");
+}
+
 app.controller('BaseCtrl', ['$scope', '$state', function($scope, $state) {
 	$scope.state = $state;
 }]);
@@ -262,7 +274,24 @@ app.controller('MovieProfileCtrl',
 			MovieCastFactory.get({id: movieId}, function(movie) {
 				$scope.movie.cast = movie.cast;
 			})
-			]).then(function() {
-				console.log('all')
-			});
+		]).then(function() {
+			if (typeof $scope.movie.id === 'undefined' || typeof $scope.movie.description === 'undefined' || typeof $scope.movie.poster ==='undefined' || typeof $scope.movie.cast === 'undefined') {
+				OMDBFactory.get({id: movieId}, function(movie) {
+					// set description
+					$scope.movie.description = movie.Plot;
+					var description = new MovieDescription($scope.movie.description);
+					MovieDescriptionFactory.update({id: movieId}, description);
+
+					// set poster
+					$scope.movie.poster = movie.Poster;
+					var poster = new MoviePoster($scope.movie.poster);
+					MoviePosterFactory.update({id: movieId}, poster);
+
+					// set cast
+					var cast = new MovieCast(movie.Actors);
+					$scope.movie.cast = cast.cast;
+					MovieCastFactory.update({id: movieId}, cast);		
+				});
+			}
+		});
 }]);

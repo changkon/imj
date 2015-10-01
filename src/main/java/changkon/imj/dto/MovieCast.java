@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * Data transmission object for storing information about movie cast
  * @author Chang Kon Han
@@ -16,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MovieCast {
 
+	@JsonProperty("cast")
 	@XmlElement(name="cast_member")
 	private Collection<String> cast;
 	

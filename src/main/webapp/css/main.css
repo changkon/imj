@@ -41,4 +41,10 @@ body {
   #log-button-panel a {
     cursor: pointer; }
 
+.movie-profile-container {
+  display: flex; }
+
+#movie-image-container {
+  margin-right: 50px; }
+
 /*# sourceMappingURL=main.css.map */

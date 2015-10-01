@@ -7,28 +7,32 @@
 	<div class="row">
 		<div class="movie-profile-container">
 			<!-- Image -->
+			<div id="movie-image-container" ng-if="movie.poster">
+				<img ng-src="{{movie.poster}}" alt="Movie poster">
+			</div>
 			<div class="movie-profile" ng-if="movie.id">
 				<p>Id: {{movie.id}}</p>
 				<p>Title: {{movie.title}}</p>
+				<p>Director: {{movie.director}}</p>
 				<p>Genre: {{movie.genre | lowercase}}</p>
-				<p>Release: {{movie.release}}</p>
+				<p>Release: {{movie.release | date: 'medium'}}</p>
 				<p>Country: {{movie.country}}</p>
 				<p>Language: {{movie.language}}</p>
 				<p>Runtime: {{movie.runtime}}</p>
 				<h3>Description</h3>
 				<p>{{movie.description}}</p>
+				<div id="cast-container">
+					<h2>Cast</h2>
+					<h4 ng-repeat="cast_member in movie.cast">{{cast_member}}</h4>
+				</div>
 			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div id="cast-container">
-			<p ng-repeat="cast_member | movie.cast">{{cast_member}}</p>
+
 		</div>
 	</div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="createMovieModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="editMovieModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">

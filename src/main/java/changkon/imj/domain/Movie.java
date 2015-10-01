@@ -50,7 +50,7 @@ public class Movie {
 			generator = "ID_GENERATOR")
 	private Collection<String> cast = new ArrayList<String>();
 	
-	@Column(name="DESCRIPTION")
+	@Column(name="DESCRIPTION", length=1000)
 	private String description;
 	
 	@Enumerated(EnumType.STRING)

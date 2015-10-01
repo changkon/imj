@@ -33,15 +33,21 @@ services.factory('MovieIdFactory', function($resource) {
 });
 
 services.factory('MovieDescriptionFactory', function($resource) {
-	return $resource('/services/movie/:id/description', {});
+	return $resource('/services/movie/:id/description', {}, {
+		'update': { method: "PUT" }
+	});
 });
 
 services.factory('MoviePosterFactory', function($resource) {
-	return $resource('/services/movie/:id/poster', {});
+	return $resource('/services/movie/:id/poster', {}, {
+		'update': { method: "PUT" }
+	});
 });
 
 services.factory('MovieCastFactory', function($resource) {
-	return $resource('/services/movie/:id/cast', {});
+	return $resource('/services/movie/:id/cast', {}, {
+		'update': { method: "PUT" }
+	});
 });
 
 // OMDB

@@ -325,7 +325,7 @@ public class MovieTest {
 			assertTrue(retrieveMovieCastCollection.contains("Matt Damon"));
 			assertTrue(retrieveMovieCastCollection.contains("Jessica Chastain"));
 			assertTrue(retrieveMovieCastCollection.contains("Michael Caine"));
-			
+
 		} finally {
 			client.close();
 		}
@@ -358,7 +358,7 @@ public class MovieTest {
 			assertEquals(movieDescription, queryDescription.getDescription());
 			
 			logger.info("Retrieved movie description matches");
-			
+
 		} finally {
 			client.close();
 		}
@@ -517,7 +517,7 @@ public class MovieTest {
 			assertEquals(url, queryMoviePoster.getUrl());
 			
 			logger.info("Retrieved movie poster matches");
-			
+
 		} finally {
 			client.close();
 		}
