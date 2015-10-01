@@ -18,3 +18,22 @@
 		}
 	}
 }
+
+.table
+{
+	.paginate
+	{
+		td
+		{
+			padding: 0;
+		}
+
+		a
+		{
+			display: block;
+			padding: 10px;
+			color: black;
+			text-decoration: none;
+		}
+	}
+}

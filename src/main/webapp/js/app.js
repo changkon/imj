@@ -15,5 +15,9 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		url: '^/movies',
 		templateUrl: 'partials/movies.html',
 		controller: 'MoviesCtrl'
+	}).state('viewerProfile', {
+		url: '^/viewer/{id}',
+		templateUrl: 'partials/viewerProfile.html',
+		controller: 'ViewerProfileCtrl'
 	});
 });

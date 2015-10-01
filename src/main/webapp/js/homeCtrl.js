@@ -61,6 +61,10 @@ app.controller('ViewersCtrl', ['$scope', 'ViewerFactory', function($scope, Viewe
 	});
 }]);
 
+app.controller('ViewerProfileCtrl', ['$scope', function($scope) {
+	console.log("made it");
+}]);
+
 app.controller('MoviesCtrl', ['$scope', function($scope) {
 	console.log("sdf");
 }]);
