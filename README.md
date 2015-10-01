@@ -30,3 +30,18 @@ git clone https://github.com/changkon/se325_main.git
 
 ### Eclipse  
 File -> Import -> Maven -> Existing Maven Projects -> Change root directory to root directory of project -> Finish
+
+## Testing  
+In Eclipse, to run the junit tests:  
+Right click project -> Run as.. -> Maven install  
+
+If you don't have maven, it must be installed.  
+
+## Web application  
+To run the web application:  
+Right click project -> Run as.. -> Run Configurations.. -> Create new Run configuration with Goals: **jetty:run**  
+
+View the web application by going to
+```
+localhost:10003
+```
