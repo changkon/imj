@@ -1,1 +1,100 @@
-<h1>Movies</h1>
+<div class="spacing-top col-md-offset-1 col-md-10">
+	<div class="row table-header-info">
+		<h1 class="pull-left" style="margin:0;">Movies</h1>
+
+		<!-- Refresh button -->
+		<div class="table-button-panel pull-right">
+			<a ng-click="refresh()"><i class="fa fa-refresh fa-2x"></i></a>
+			<button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#createMovieModal">Create</button>
+		</div>
+	</div>
+	<div class="row">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Title</th>
+					<th>Director</th>
+					<th>Genre</th>
+					<th>Release</th>
+					<th>Country</th>
+					<th>Language</th>
+					<th>Runtime</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr dir-paginate="movie in movies | itemsPerPage: limit" class="paginate link">
+					<td><a ui-sref="movieProfile({ id: movie.id })">{{movie.id}}</a></td>
+					<td><a ui-sref="movieProfile({ id: movie.id })">{{movie.title}}</a></td>
+					<td><a ui-sref="movieProfile({ id: movie.id })">{{movie.director}}</a></td>
+					<td><a ui-sref="movieProfile({ id: movie.id })">{{movie.genre | lowercase}}</a></td>
+					<td><a ui-sref="movieProfile({ id: movie.id })">{{movie.release | date: 'medium'}}</a></td>
+					<td><a ui-sref="movieProfile({ id: movie.id })">{{movie.country}}</a></td>
+					<td><a ui-sref="movieProfile({ id: movie.id })">{{movie.language}}</a></td>
+					<td><a ui-sref="movieProfile({ id: movie.id })">{{movie.runtime}}</a></td>
+				</tr>
+			</tbody>
+		</table>
+		<dir-pagination-controls></dir-pagination-controls>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createMovieModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Create Movie</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="title">Title</label>
+						<input class="form-control" type="text" name="title" ng-model="movie.title" placeholder="Movie Title" id="title" required>
+					</div>
+					<div class="form-group">
+						<label for="director">Director</label>
+						<input class="form-control" type="text" name="director" ng-model="movie.director" placeholder="Movie Director" id="director" required>
+					</div>
+					<div class="form-group">
+						<label for="genre">Genre</label>
+						<select id="genre" class="form-control" ng-model="movie.genre">
+							<option value="ACTION">Action</option>
+							<option value="ADVENTURE">Adventure</option>
+							<option value="COMEDY">Comedy</option>
+							<option value="CRIME">Crime</option>
+							<option value="FANTASY">Fantasy</option>
+							<option value="HORROR">Horror</option>
+							<option value="MYSTERY">Mystery</option>
+							<option value="ROMANCE">Romance</option>
+							<option value="SCIENCEFICTION">Science Fiction</option>
+							<option value="THRILLER">Thriller</option>
+							<option value="ANIMATION">Animation</option>
+							<option value="DRAMAFILM">Drama Film</option>
+							<option value="BIOGRAPHY">Biography</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="release">Release</label>
+						<input class="form-control" type="date" name="release" ng-model="movie.release" placeholder="Movie Release" id="release" required>
+					</div>
+					<div class="form-group">
+						<label for="country">Country</label>
+						<input class="form-control" type="text" name="country" ng-model="movie.country" placeholder="Movie Country" id="country" required>
+					</div>
+					<div class="form-group">
+						<label for="language">Language</label>
+						<input class="form-control" type="text" name="language" ng-model="movie.language" placeholder="Movie Language" id="language" required>
+					</div>
+					<div class="form-group">
+						<label for="runtime">Runtime</label>
+						<input class="form-control" type="number" name="runtime" ng-model="movie.runtime" placeholder="Movie Runtime" id="runtime" required>
+					</div>
+
+					<button class="btn btn-primary" data-dismiss="modal" type="submit" ng-click="createMovie()">Create</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

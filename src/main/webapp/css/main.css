@@ -9,6 +9,9 @@ body {
 #navbar {
   margin-bottom: 0px; }
 
+.spacing-top {
+  margin-top: 50px; }
+
 .table-header-info h1 {
   margin: 0; }
 .table-header-info .table-button-panel {

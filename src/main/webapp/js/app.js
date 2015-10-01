@@ -7,17 +7,21 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		url: '/',
 		templateUrl: 'partials/index.html',
 		controller: 'HomeCtrl'
-	}).state('viewers', {
-		url: '^/viewers',
+	}).state('viewer', {
+		url: '^/viewer',
 		templateUrl: 'partials/viewers.html',
 		controller: 'ViewersCtrl'
-	}).state('movies', {
-		url: '^/movies',
+	}).state('movie', {
+		url: '^/movie',
 		templateUrl: 'partials/movies.html',
 		controller: 'MoviesCtrl'
 	}).state('viewerProfile', {
 		url: '^/viewer/{id}',
 		templateUrl: 'partials/viewerProfile.html',
 		controller: 'ViewerProfileCtrl'
+	}).state('movieProfile', {
+		url: '^/movie/{id}',
+		templateUrl: 'partials/movieProfile.html',
+		controller: 'MovieProfileCtrl'
 	});
 });

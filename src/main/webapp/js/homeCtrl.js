@@ -10,19 +10,26 @@ function Viewer(firstName, lastName, country, age, gender) {
 }
 
 function Movie(title, director, genre, release, country, language, runtime) {
+	this.id = null;
 	this.title = title;
 	this.director = director;
 	this.genre = genre;
+	this.release = release;
 	this.country = country;
 	this.language = language;
 	this.runtime = runtime;
 }
 
 function Log(movie, date, geo_location) {
+	this.id = null;
 	this.movie = movie;
 	this.date = date;
 	this.geo_location = geo_location;
 }
+
+app.controller('BaseCtrl', ['$scope', '$state', function($scope, $state) {
+	$scope.state = $state;
+}]);
 
 app.controller('HomeCtrl', ['$scope', '$state', 'ViewerFactory', 'MovieFactory', function($scope, $state, ViewerFactory, MovieFactory) {
 	$scope.state = $state;
@@ -165,6 +172,32 @@ app.controller('RecommendedCtrl', ['$scope', '$stateParams', 'RecommendedFactory
 	});
 }]);
 
-app.controller('MoviesCtrl', ['$scope', function($scope) {
-	console.log("sdf");
+app.controller('MoviesCtrl', ['$scope', 'MovieFactory', function($scope, MovieFactory) {
+	$scope.limit = 30;
+	$scope.movie = {};
+
+	$scope.createMovie = function() {
+		if (Object.keys($scope.movie).length != 7) {
+			return;
+		}
+
+		var movie = new Movie($scope.movie.title, $scope.movie.director, $scope.movie.genre, $scope.movie.release, $scope.movie.country, $scope.movie.language, $scope.movie.runtime);
+
+		// reset
+		$scope.movie = {};
+
+		// add to database
+		MovieFactory.save(movie);
+	};
+
+	$scope.refresh = function() {
+		MovieFactory.get({}, function(movies) {
+			$scope.movies = movies.movie;
+		});
+	};
+
+	// Initially load data
+	MovieFactory.get({}, function(movies) {
+		$scope.movies = movies.movie;
+	});
 }]);

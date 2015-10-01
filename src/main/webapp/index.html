@@ -23,7 +23,7 @@
     <!-- Load site css -->
     <link rel="stylesheet" type="text/css" href="./css/main.css">
 </head>
-<body>
+<body ng-controller="BaseCtrl">
 	<!-- Create navbar -->
 	<nav id="navbar" class="navbar navbar-default">
 		<div class="container">
@@ -40,7 +40,7 @@
 
 			<div class="collapse navbar-collapse" id="navbar-links">
 				<ul class="nav navbar-nav navbar-right">
-					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#">Home</a></li>
 					<li><a href="#">Viewers</a></li>
 					<li><a href="#">Movies</a></li>
 				</ul>
@@ -48,7 +48,7 @@
 		</div>
 	</nav>
 	<div id="main">
-		<div class="jumbotron">
+		<div ng-if="state.current.name == 'home'" class="jumbotron">
 			<div class="container">
 				<h1>Internet Movie Journal</h1>
 				<p>Online logging system for movie viewers!</p>
