@@ -13,7 +13,7 @@ public class ViewerTest {
 	public void testUnMarshal() {
 		String xml = "<viewer id=\"1\">"
 				+ "<first_name>Chang Kon</first_name>"
-				+ "<last_name>Han</last-name>"
+				+ "<last_name>Han</last_name>"
 				+ "<age>20</age>"
 				+ "<gender>male</gender>"
 				+ "<country>South Korea</country>"
