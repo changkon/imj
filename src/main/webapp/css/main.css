@@ -27,4 +27,15 @@ body {
   color: black;
   text-decoration: none; }
 
+#log-container {
+  margin-top: 30px; }
+
+#log-button-panel {
+  display: flex;
+  align-items: center; }
+  #log-button-panel button {
+    margin-left: 20px; }
+  #log-button-panel a {
+    cursor: pointer; }
+
 /*# sourceMappingURL=main.css.map */

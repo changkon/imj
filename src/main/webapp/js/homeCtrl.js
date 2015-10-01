@@ -18,6 +18,12 @@ function Movie(title, director, genre, release, country, language, runtime) {
 	this.runtime = runtime;
 }
 
+function Log(movie, date, geo_location) {
+	this.movie = movie;
+	this.date = date;
+	this.geo_location = geo_location;
+}
+
 app.controller('HomeCtrl', ['$scope', '$state', 'ViewerFactory', 'MovieFactory', function($scope, $state, ViewerFactory, MovieFactory) {
 	$scope.state = $state;
 	$scope.limit = 10;
@@ -92,7 +98,6 @@ app.controller('ViewerProfileCtrl', ['$scope', '$stateParams', 'ViewerIdFactory'
 		$scope.editViewer = {};
 
 		ViewerIdFactory.update({id: viewerId}, viewer);
-		console.log("clicked");
 		// refresh
 		$scope.refreshViewer();
 	};
@@ -111,22 +116,52 @@ app.controller('ViewerProfileCtrl', ['$scope', '$stateParams', 'ViewerIdFactory'
 
 app.controller('LogCtrl', ['$scope', '$stateParams', 'LogsFactory', function($scope, $stateParams, LogsFactory) {
 	$scope.limit = 15;
+	$scope.movie = {};
+	$scope.geo_location = {};
 
 	var viewerId = $stateParams.id;
 
+	$scope.add = function() {
+		if (Object.keys($scope.movie).length != 7) {
+			return;
+		}
+
+		if (Object.keys($scope.geo_location).length != 2) {
+			return;
+		}
+
+		if (typeof $scope.date === 'undefined') {
+    		return;
+		}
+
+		var log = new Log($scope.movie, $scope.date, $scope.geo_location);
+
+		// post to database
+		LogsFactory.save({id: viewerId}, log);
+
+		delete $scope.date;
+		$scope.movie = {};
+		$scope.geo_location = {};
+	};
+
+	$scope.refresh = function() {
+		LogsFactory.get({id: viewerId}, function(logs) {
+			$scope.logs = logs.log;
+		});
+	};
 
 	// initially load log details
 	LogsFactory.get({id: viewerId}, function(logs) {
 		$scope.logs = logs.log;
-		console.log(logs);
 	});
 }]);
 
 app.controller('RecommendedCtrl', ['$scope', '$stateParams', 'RecommendedFactory', function($scope, $stateParams, RecommendedFactory) {
+	$scope.limit = 5;
 	var viewerId = $stateParams.id;
 
 	RecommendedFactory.get({id: viewerId}, function(recommended) {
-		console.log(recommended);
+		$scope.recommended = recommended.recommended;
 	});
 }]);
 
