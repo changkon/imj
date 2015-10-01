@@ -65,6 +65,14 @@ public class Log {
 		this.movie = movie;
 	}
 
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 	/**
 	 * @return Date of Log entry
 	 */

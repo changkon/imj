@@ -23,6 +23,8 @@ import changkon.imj.domain.Genre;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerRecommendedMovies;
+import changkon.imj.jackson.JsonPrint;
+import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
 
 public class RecommendedMovieTest {
@@ -162,7 +164,6 @@ public class RecommendedMovieTest {
 			
 			response.close();
 			logger.info("Retrieved recommended movies successfully");
-			
 		} finally {
 			client.close();
 		}

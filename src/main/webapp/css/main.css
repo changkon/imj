@@ -19,9 +19,9 @@ body {
     margin-right: 30px;
     cursor: pointer; }
 
-.table .paginate td {
+.table .paginate.link td {
   padding: 0; }
-.table .paginate a {
+.table .paginate.link a {
   display: block;
   padding: 10px;
   color: black;

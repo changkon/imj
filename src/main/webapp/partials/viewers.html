@@ -21,7 +21,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr dir-paginate="viewer in viewers | itemsPerPage: limit" class="paginate">
+				<tr dir-paginate="viewer in viewers | itemsPerPage: limit" class="paginate link">
 					<td><a ui-sref="viewerProfile({ id: viewer.id })">{{viewer.id}}</a></td>
 					<td><a ui-sref="viewerProfile({ id: viewer.id })">{{viewer.first_name}}</a></td>
 					<td><a ui-sref="viewerProfile({ id: viewer.id })">{{viewer.last_name}}</a></td>

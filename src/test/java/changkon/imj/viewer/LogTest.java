@@ -22,6 +22,8 @@ import changkon.imj.dto.Log;
 import changkon.imj.dto.Movie;
 import changkon.imj.dto.Viewer;
 import changkon.imj.dto.ViewerLogs;
+import changkon.imj.jackson.JsonPrint;
+import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
 
 public class LogTest {

@@ -61,8 +61,73 @@ app.controller('ViewersCtrl', ['$scope', 'ViewerFactory', function($scope, Viewe
 	});
 }]);
 
-app.controller('ViewerProfileCtrl', ['$scope', function($scope) {
-	console.log("made it");
+app.controller('ViewerProfileCtrl', ['$scope', '$stateParams', 'ViewerIdFactory', function($scope, $stateParams, ViewerIdFactory) {
+	var viewerId = $stateParams.id;
+	$scope.viewer = {};
+	$scope.editViewer = {};
+
+	$scope.refreshViewer = function() {
+		ViewerIdFactory.get({id: viewerId}, function(viewer) {
+			$scope.viewer.id = viewer.id;
+			$scope.viewer.first_name = viewer.first_name;
+			$scope.viewer.last_name = viewer.last_name;
+			$scope.viewer.age = viewer.age;
+			$scope.viewer.gender = viewer.gender;
+			$scope.viewer.country = viewer.country;
+		});
+	};
+
+	$scope.delete = function() {
+		ViewerIdFactory.delete({id: viewerId});
+	};
+
+	$scope.edit = function() {
+		if (Object.keys($scope.editViewer).length != 5) {
+			return;
+		}
+
+		var viewer = new Viewer($scope.editViewer.firstName, $scope.editViewer.lastName, $scope.editViewer.country, $scope.editViewer.age, $scope.editViewer.gender);
+
+		// reset
+		$scope.editViewer = {};
+
+		ViewerIdFactory.update({id: viewerId}, viewer);
+		console.log("clicked");
+		// refresh
+		$scope.refreshViewer();
+	};
+
+	// initially load Viewer details
+	ViewerIdFactory.get({id: viewerId}, function(viewer) {
+		$scope.viewer.id = viewer.id;
+		$scope.viewer.first_name = viewer.first_name;
+		$scope.viewer.last_name = viewer.last_name;
+		$scope.viewer.age = viewer.age;
+		$scope.viewer.gender = viewer.gender;
+		$scope.viewer.country = viewer.country;
+	});
+
+}]);
+
+app.controller('LogCtrl', ['$scope', '$stateParams', 'LogsFactory', function($scope, $stateParams, LogsFactory) {
+	$scope.limit = 15;
+
+	var viewerId = $stateParams.id;
+
+
+	// initially load log details
+	LogsFactory.get({id: viewerId}, function(logs) {
+		$scope.logs = logs.log;
+		console.log(logs);
+	});
+}]);
+
+app.controller('RecommendedCtrl', ['$scope', '$stateParams', 'RecommendedFactory', function($scope, $stateParams, RecommendedFactory) {
+	var viewerId = $stateParams.id;
+
+	RecommendedFactory.get({id: viewerId}, function(recommended) {
+		console.log(recommended);
+	});
 }]);
 
 app.controller('MoviesCtrl', ['$scope', function($scope) {

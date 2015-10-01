@@ -1,1 +1,94 @@
-<h1>Viewer Profile</h1>
+<div class="col-md-offset-1 col-md-10">
+	<div class="row">
+		<h1 class="pull-left" style="margin: 0px;">{{viewer.first_name}} {{viewer.last_name}}</h1>
+		<button type="button" class="pull-right btn btn-lg btn-danger" data-toggle="modal" ui-sref="viewers" ng-click="delete()">Delete</button>
+		<button type="button" class="pull-right btn btn-lg btn-success" data-toggle="modal" data-target="#editViewerModal" style="margin-right: 20px;">Edit</button>
+	</div>
+	<div class="row">
+		<div class="viewer-profile-container">
+			<!-- Image -->
+			<div class="viewer-profile" ng-if="viewer.id">
+				<p>Id: {{viewer.id}}</p>
+				<p>First Name: {{viewer.first_name}}</p>
+				<p>Last Name: {{viewer.last_name}}</p>
+				<p>Age: {{viewer.age}}</p>
+				<p>Gender: {{viewer.gender | lowercase}}</p>
+				<p>Country : {{viewer.country}}</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="viewer-info">
+			<div id="log-container" ng-controller="LogCtrl">
+				<h2>Logs</h2>
+
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Movie Id</th>
+							<th>Movie Title</th>
+							<th>Date</th>
+							<th>Latitude</th>
+							<th>Longitude</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr dir-paginate="log in logs | itemsPerPage: limit" class="paginate">
+							<td>{{log.id}}</td>
+							<td>{{log.movie.id}}</td>
+							<td>{{log.movie.title}}</td>
+							<td>{{log.date | date: 'medium'}}</td>
+							<td>{{log.geo_location.latitude}}</td>
+							<td>{{log.geo_location.longitude}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<dir-pagination-controls></dir-pagination-controls>
+			</div>
+			<div id="recommended-container" ng-controller="RecommendedCtrl">
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="editViewerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Edit Viewer</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="firstName">First Name</label>
+						<input class="form-control" type="text" name="firstName" ng-model="editViewer.firstName" placeholder="First Name" id="firstName" required>
+					</div>
+					<div class="form-group">
+						<label for="lastName">Last Name</label>
+						<input class="form-control" type="text" name="lastName" ng-model="editViewer.lastName" placeholder="Last Name" id="lastName" required>
+					</div>
+					<div class="form-group">
+						<label for="age">Age</label>
+						<input class="form-control" type="number" name="age" ng-model="editViewer.age" placeholder="Age" id="age" required>
+					</div>
+					<div class="form-group">
+						<label for="gender">Gender</label>
+						<select id="gender" class="form-control" ng-model="editViewer.gender">
+							<option value="MALE">Male</option>
+							<option value="FEMALE">Female</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="country">Country</label>
+						<input class="form-control" type="text" name="country" ng-model="editViewer.country" placeholder="Country" id="country" required>
+					</div>
+
+					<button class="btn btn-primary" data-dismiss="modal" type="submit" ng-click="edit()">Edit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

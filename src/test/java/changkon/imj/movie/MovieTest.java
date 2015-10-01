@@ -30,6 +30,7 @@ import changkon.imj.dto.MoviePoster;
 import changkon.imj.dto.MovieReleaseDates;
 import changkon.imj.dto.Movies;
 import changkon.imj.dto.Viewer;
+import changkon.imj.dto.ViewerLogs;
 import changkon.imj.jackson.JsonPrint;
 import changkon.imj.jaxb.JAXB;
 import changkon.imj.services.IMJApplication;
@@ -201,7 +202,6 @@ public class MovieTest {
 			assertTrue(movie.equals(queryMovie));
 			
 			logger.info("Queried movie is equal to movie created earlier");
-			
 		} finally {
 			client.close();
 		}
