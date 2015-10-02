@@ -269,7 +269,7 @@ app.controller('MovieProfileCtrl',
 				$scope.movie.description = movie.description;
 			}),
 			MoviePosterFactory.get({id: movieId}, function(movie) {
-				$scope.movie.poster = movie.poster;
+				$scope.movie.poster = movie.url;
 			}),
 			MovieCastFactory.get({id: movieId}, function(movie) {
 				$scope.movie.cast = movie.cast;
